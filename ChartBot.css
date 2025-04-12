@@ -27,7 +27,7 @@
     overflow: hidden;
     transform: scale(0);
     transition: transform 0.3s ease-in-out;
-    margin : auto;  
+    margin-bottom : 100px;  
     }
 
     .chatbot.show-chatbot {
