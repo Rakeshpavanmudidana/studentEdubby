@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="loader.css">
+    <link rel="stylesheet" href="ChartBot.css">
+    <!-- <link rel="stylesheet" href="doubt.css"> -->
+    <!-- <script type="module" src="doubt.js"> </script> -->
+    <script type="importmap">
+      {
+          "imports": {
+              "firebase/app": "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js",
+              "firebase/database": "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"
+          }
+      }
+  </script> 
+</head>
+  <style>
+    :root {
+      --primary: #4682b4;
+      --secondary: #add8e6;
+      --light-bg: #f5faff;
+      --box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      --border-radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f2027);
+      color: #ffffff;
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 2rem;
+    }
+
+    main.container {
+      max-width: 360px;
+      margin: auto;
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px rgba(6, 218, 218, 0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section {
+      margin-bottom: 2rem;
+    }
+
+    .section h3 {
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    textarea, input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: var(--border-radius);
+      margin-bottom: 10px;
+      background-color: #f9f9f9;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #ff00ff, #00eaff);
+      color: white;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: 0.3s;
+      align-items: center;
+    }
+
+    button:hover {
+      background-color: #3a6f99;
+    }
+
+    .question {
+      padding: 12px;
+      background-color: #f0f8ff;
+      border-radius: var(--border-radius);
+      margin-bottom: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      color: black;
+    }
+
+    .question-text {
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .question button {
+      margin-right: 10px;
+      margin-top: 8px;
+      background: linear-gradient(135deg, #42e695, #3bb2b8);
+      color: white;
+      padding: 6px 14px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .question button:hover {
+      background: #35a79c;
+    }
+
+    .answer-display {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #ffffff;
+      color: #000;
+      border-radius: var(--border-radius);
+      border-left: 4px solid var(--primary);
+      display: none;
+    }
+
+    .answer-box {
+      display: none;
+      border-top: 1px solid #eee;
+      padding-top: 1rem;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 1rem;
+      }
+    }
+
+  </style>
+<body>
+  
+  <h1>Ask & Solve Questions</h1>
+
+  <div class="container">
+    <!-- Ask Section -->
+    <div class="section">
+      <h3>Ask a Question</h3>
+      <textarea id="questionInput" rows="3" placeholder="Drop your question here..."></textarea>
+      <button onclick="addQuestion()">Post Question</button>
+    </div>
+
+    <!-- Question List -->
+    <div class="section">
+      <h3>Student Questions</h3>
+      <div id="questionsContainer"></div>
+    </div>
+
+    <!-- Answer Section -->
+    <div class="section answer-box" id="answerSection">
+      <h3>Write Your Solution</h3>
+      <p><strong>Question:</strong> <span id="selectedQuestion"></span></p>
+      <textarea id="answerInput" rows="4" placeholder="Write your answer here..."></textarea>
+      <button onclick="submitAnswer()">Submit Answer</button>
+    </div>
+  </div>
+
+
+
+
+
+
+
+  <button class="chatbot-toggler">
+    <span class="material-symbols-outlined">🤖</span>
+  </button>
+    <div class="chatbot">
+        <header>
+            <h2>AI ChatBot</h2>
+            <span class="close-btn">&times;</span>
+        </header>
+        <ul class="chatbox"></ul>
+        <div class="chat-input">
+            <textarea id="chat-input" placeholder="Ask your questions...🎯" required></textarea>
+            <button id="send-btn" class="send-btn">Send</button>
+        </div>
+    </div>
+    <button id="logoutButton"><img src="https://cdn.glitch.global/5be2e27e-1545-4ba2-abaa-45f2be7d62ad/logout.png?v=1744495496073" alt="Description" width="30" height="30"> </button>
+    
+    <div class="bottom-nav">
+        <a href="#" class="nav-item" data-tab="index">
+            <img class="imgs" src="icons8-home-50.png" >
+          
+        </a>
+        <a href="#" class="nav-item active" data-tab="doubt">
+          <img style="height: 40px;" class="imgs" src="ChatGPT Image Apr 12, 2025, 03_07_40 PM.png">
+          
+        </a>
+        <a href="#" class="nav-item" data-tab="chat">
+            <img class="imgs" src="IMG_9922.PNG" >
+        </a>
+        <a href="#" class="nav-item" data-tab="road map">
+          <img class="imgs" src="IMG_9876.PNG">
+        </a>
+    
+        <a href="#" class="nav-item" data-tab="profile">
+          <img style="height: 45px;" src="icons8-male-user-50.png">
+        </a>
+      </div>
+      <div class="spinner" id="loadingPopup" style="display: none;">
+        <div class="spinner1"></div>
+      </div>
+
+      <script type="module" src="ChatBotscript.js"></script>
+      
+      <script type="module" src="bottom.js"> </script>
+
+      <script type="module">
+        import { getNotes } from "./script.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import {
+          getFirestore,
+          collection,
+          addDoc,
+          getDocs,
+          doc,
+          updateDoc,
+          arrayUnion
+        } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+      
+        const firebaseConfig = {
+          apiKey: "AIzaSyAEYRe6z2Zovdd6joWoUnsjvOzHyX-7JNQ",
+          authDomain: "edubuddy-3013d.firebaseapp.com",
+          projectId: "edubuddy-3013d",
+          storageBucket: "edubuddy-3013d.appspot.com",
+          messagingSenderId: "321353809164",
+          appId: "1:321353809164:web:9719009ed105a528dfdd29",
+          measurementId: "G-PJR8FR1C0Q",
+          databaseURL: "https://edubuddy-3013d-default-rtdb.firebaseio.com",
+        };
+
+
+      
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+      
+        const questionsCollection = collection(db, "questions");
+
+        const loadingPopup = document.getElementById("loadingPopup");
+      
+        async function addQuestion() {
+          loadingPopup.style.display = "block";
+          const question = document.getElementById('questionInput').value.trim();
+
+          let prompt = question + " check whether the given sentence has vulgar language or not. If it exists then return true else return false. Note: don't return more than true or false.";
+
+          let mcp = await getNotes(prompt);
+          loadingPopup.style.display = "none";
+
+          if (String(mcp).trim().toLowerCase() === "true") {
+          alert("Don't use vulgar language");
+          console.log(typeof mcp);
+          document.getElementById('questionInput').value = '';
+          return;
+          }
+
+          if (question === '') return;
+          await addDoc(questionsCollection, { question, answers: [] });
+          document.getElementById('questionInput').value = '';
+          loadQuestions();
+
+        }
+      
+        async function loadQuestions() {
+          const container = document.getElementById('questionsContainer');
+          container.innerHTML = '';
+      
+          const snapshot = await getDocs(questionsCollection);
+          snapshot.forEach(docSnap => {
+            const data = docSnap.data();
+            const questionWrapper = document.createElement('div');
+            questionWrapper.className = 'question';
+      
+            const questionText = document.createElement('div');
+            questionText.className = 'question-text';
+            questionText.innerText = data.question;
+            questionText.onclick = () => openAnswerBox(docSnap.id, data.question);
+            questionWrapper.appendChild(questionText);
+      
+            const answerBtn = document.createElement('button');
+            answerBtn.innerText = "Write Answer";
+            answerBtn.onclick = () => openAnswerBox(docSnap.id, data.question);
+            questionWrapper.appendChild(answerBtn);
+      
+            if (data.answers && data.answers.length > 0) {
+              const viewBtn = document.createElement('button');
+              viewBtn.innerText = "View Answers";
+              viewBtn.onclick = (e) => {
+                e.stopPropagation();
+                const answerDiv = questionWrapper.querySelector('.answer-display');
+                answerDiv.style.display = answerDiv.style.display === 'block' ? 'none' : 'block';
+              };
+              questionWrapper.appendChild(viewBtn);
+      
+              const answerDiv = document.createElement('div');
+              answerDiv.className = 'answer-display';
+              answerDiv.style.display = 'none';
+      
+              data.answers.forEach(ans => {
+                const p = document.createElement('p');
+                p.innerText = `• ${ans}`;
+                answerDiv.appendChild(p);
+              });
+      
+              questionWrapper.appendChild(answerDiv);
+            }
+      
+            container.appendChild(questionWrapper);
+          });
+        }
+      
+        function openAnswerBox(id, questionText) {
+          const section = document.getElementById('answerSection');
+          section.style.display = 'block';
+          document.getElementById('selectedQuestion').innerText = questionText;
+          document.getElementById('answerInput').value = '';
+          section.dataset.currentDocId = id;
+        }
+      
+        async function submitAnswer() {
+          const id = document.getElementById('answerSection').dataset.currentDocId;
+          const answer = document.getElementById('answerInput').value.trim();
+          loadingPopup.style.display = "block";
+          let prompt = answer + " check whether the given sentence has vulgar language or not. If it exists then return true else return false. Note: don't return more than true or false.";
+
+          let mcp = await getNotes(prompt);
+          loadingPopup.style.display = "none";
+
+          if (String(mcp).trim().toLowerCase() === "true") {
+          alert("Don't use vulgar language");
+          console.log(typeof mcp);
+          document.getElementById('answerInput').value = '';
+          return;
+          }
+          if (answer === '') {
+            alert("Please enter an answer.");
+            return;
+          }
+      
+          const qRef = doc(db, "questions", id);
+          await updateDoc(qRef, {
+            answers: arrayUnion(answer)
+          });
+      
+          alert("Answer submitted successfully!");
+          document.getElementById('answerSection').style.display = 'none';
+          loadQuestions();
+        }
+      
+        // Load all questions on page load
+        loadQuestions();
+      
+        // Make functions globally accessible if needed
+        window.addQuestion = addQuestion;
+        window.submitAnswer = submitAnswer;
+      </script>
+      
+</body>
+</html>

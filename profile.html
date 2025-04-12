@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="loader.css">
+    <link rel="stylesheet" href="ChartBot.css">
+</head>
+<body>
+  <button class="chatbot-toggler">
+    <span class="material-symbols-outlined">🤖</span>
+  </button>
+    <div class="chatbot">
+        <header>
+            <h2>AI ChatBot</h2>
+            <span class="close-btn">&times;</span>
+        </header>
+        <ul class="chatbox"></ul>
+        <div class="chat-input">
+            <textarea id="chat-input" placeholder="Ask your questions...🎯" required></textarea>
+            <button id="send-btn" class="send-btn">Send</button>
+        </div>
+    </div>
+    <button id="logoutButton"><img src="https://cdn.glitch.global/5be2e27e-1545-4ba2-abaa-45f2be7d62ad/logout.png?v=1744495496073" alt="Description" width="30" height="30"> </button>
+    
+    <div class="bottom-nav">
+        <a href="#" class="nav-item" data-tab="index">
+            <img class="imgs" src="icons8-home-50.png" >
+          
+        </a>
+        <a href="#" class="nav-item " data-tab="doubt">
+          <img style="height: 40px;" class="imgs" src="ChatGPT Image Apr 12, 2025, 03_07_40 PM.png">
+          
+        </a>
+        <a href="#" class="nav-item" data-tab="chat">
+            <img class="imgs" src="IMG_9922.PNG" >
+        </a>
+        <a href="#" class="nav-item " data-tab="road map">
+          <img class="imgs" src="IMG_9876.PNG">
+        </a>
+    
+        <a href="#" class="nav-item active" data-tab="profile">
+          <img style="height: 45px;" src="icons8-male-user-50.png">
+        </a>
+      </div>
+
+      <script type="module" src="ChatBotscript.js"></script>
+      <script type="module" src="bottom.js"> </script>
+</body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="loader.css">
+    <link rel="stylesheet" href="ChartBot.css">
+    <style>
+      h1 {
+      margin-bottom: 30px;
+      font-size: 2.8rem;
+      text-align: center;
+      color: #ffffff;
+    }
+
+    .input-section {
+      margin-bottom: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    input[type="text"] {
+      padding: 12px 15px;
+      width: 300px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      font-size: 1.1rem;
+    }
+
+    button {
+      padding: 12px 20px;
+      background: #2ad2c9;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #1bb6ac;
+    }
+
+    .flowchart-container {
+      display: flex;
+      align-items: center;
+      overflow-x: auto;
+      padding: 30px;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 1200px;
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px rgba(6, 218, 218, 0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      scroll-behavior: smooth;
+    }
+
+    .step {
+      min-width: 160px;
+      padding: 15px 20px;
+      margin: 0 10px;
+      border-radius: 15px;
+      background-color: rgba(255, 255, 255, 0.15);
+      border: 2px solid #2ad2c9;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .step:hover {
+      background-color: rgba(42, 210, 201, 0.2);
+      box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+    }
+
+    .step.start, .step.end {
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .arrow {
+      width: 40px;
+      height: 2px;
+      background-color: #2ad2c9;
+      margin: 0 10px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .arrow::after {
+      content: '';
+      position: absolute;
+      right: -5px;
+      top: -6px;
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
+      border-left: 10px solid #2ad2c9;
+    }
+
+    .info-box {
+      display: none;
+      background-color: rgba(255, 255, 255, 0.15);
+      border-radius: 15px;
+      padding: 20px;
+      max-width: 400px;
+      margin-top: 30px;
+      text-align: left;
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
+    }
+
+    .flowchart-container::-webkit-scrollbar {
+      height: 10px;
+    }
+
+    .flowchart-container::-webkit-scrollbar-thumb {
+      background: #2ad2c9;
+      border-radius: 5px;
+    }
+
+    .flowchart-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    </style>
+</head>
+<body>
+
+  <h1>EduBuddy Goal Roadmap</h1>
+  <div class="input-section">
+    <input type="text" id="goalInput" placeholder="Enter your goal (e.g. Web Developer)">
+    <button onclick="generateRoadmap()">Generate Roadmap</button>
+  </div>
+
+  <div class="flowchart-container" id="flowchartContainer"></div>
+  <div id="infoBox" class="info-box"></div>
+
+  <button class="chatbot-toggler">
+    <span class="material-symbols-outlined">🤖</span>
+  </button>
+    <div class="chatbot">
+        <header>
+            <h2>AI ChatBot</h2>
+            <span class="close-btn">&times;</span>
+        </header>
+        <ul class="chatbox"></ul>
+        <div class="chat-input">
+            <textarea id="chat-input" placeholder="Ask your questions...🎯" required></textarea>
+            <button id="send-btn" class="send-btn">Send</button>
+        </div>
+    </div>
+    <button id="logoutButton"><img src="logout.png" alt="Description" width="30" height="30"> </button>
+    
+    <div class="bottom-nav">
+        <a href="#" class="nav-item" data-tab="index">
+            <img class="imgs" src="icons8-home-50.png" >
+          
+        </a>
+        <a href="#" class="nav-item " data-tab="doubt">
+          <img style="height: 40px;" class="imgs" src="ChatGPT Image Apr 12, 2025, 03_07_40 PM.png">
+          
+        </a>
+        <a href="#" class="nav-item" data-tab="chat">
+            <img class="imgs" src="IMG_9922.PNG" >
+        </a>
+        <a href="#" class="nav-item active" data-tab="road map">
+          <img class="imgs" src="IMG_9876.PNG">
+        </a>
+    
+        <a href="#" class="nav-item" data-tab="profile">
+          <img style="height: 45px;" src="icons8-male-user-50.png">
+        </a>
+      </div>
+
+      <script type="module" src="ChatBotscript.js"></script>
+      <script type="module" src="bottom.js"> </script>
+      <script>
+        const stepInfo = {
+          "Learn HTML": "HTML structures web content using elements and tags.",
+          "Learn CSS": "CSS styles HTML pages with layout, colors, and animations.",
+          "Learn JavaScript": "JS makes web pages dynamic and interactive.",
+          "Build Responsive Projects": "Use CSS media queries to make your website mobile-friendly.",
+          "Create Portfolio": "Showcase your projects and skills in a personal site.",
+          "Apply for Jobs": "Apply for roles and internships after learning and building.",
+          "Learn Python": "Python is widely used in data science, AI, and web development.",
+          "Understand Statistics": "Important for analyzing and visualizing data.",
+          "Master Pandas/Numpy": "Libraries for handling data and performing operations.",
+          "Explore ML Algorithms": "Understand supervised and unsupervised ML.",
+          "Build ML Projects": "Apply theory with real-time datasets and projects.",
+          "Apply for Data Roles": "Look for data analyst or data scientist opportunities.",
+          "Study Linear Algebra": "Fundamental math used in ML and AI.",
+          "Deep Learning Basics": "Neural networks, CNNs, RNNs — core DL concepts.",
+          "TensorFlow/PyTorch": "Popular frameworks to build deep learning models.",
+          "Work on AI Projects": "Hands-on project development improves learning.",
+          "Get Internship or Job": "Gain professional experience in AI/ML fields.",
+          "Learn Java/Kotlin": "Main programming languages for Android apps.",
+          "Learn Android Studio": "Google’s official IDE for Android development.",
+          "Build Android UI": "Use XML and Jetpack Compose for UI design.",
+          "Connect to Firebase": "Add backend services like database & auth.",
+          "Publish on Play Store": "Distribute your app to Android users.",
+          "Learn Swift": "Primary language for iOS app development.",
+          "Xcode IDE": "Official IDE to develop apps for Apple devices.",
+          "Storyboard & SwiftUI": "Tools for building UI in iOS apps.",
+          "Test on Simulators": "Check your app on various iPhones/iPads.",
+          "Publish to App Store": "Submit your app via App Store Connect.",
+          "Learn Flutter/React Native": "Cross-platform frameworks to build apps for both iOS and Android.",
+          "Build Shared UI": "Use single codebase for both platforms.",
+          "Integrate APIs": "Connect your app to external services.",
+          "Master Frontend & Backend": "Learn React, Node.js, Express, MongoDB.",
+          "Deploy Projects": "Use platforms like Vercel or Heroku for hosting.",
+          "Learn IoT Basics": "Understand sensors, microcontrollers, and protocols.",
+          "Work with Arduino/Raspberry Pi": "Hands-on experience with hardware.",
+          "Build IoT Projects": "Create smart devices with sensor input/output.",
+          "Connect to Cloud": "Use platforms like AWS IoT or Blynk.",
+          "Secure IoT Devices": "Implement basic IoT security practices."
+        };
+    
+        function generateRoadmap() {
+          const goal = document.getElementById('goalInput').value.trim().toLowerCase();
+          const container = document.getElementById('flowchartContainer');
+          const infoBox = document.getElementById('infoBox');
+          container.innerHTML = '';
+          infoBox.style.display = 'none';
+    
+          const roadmapSteps = {
+            "web developer": ["Learn HTML", "Learn CSS", "Learn JavaScript", "Build Responsive Projects", "Create Portfolio", "Apply for Jobs"],
+            "full stack developer": ["Learn HTML", "Learn CSS", "Learn JavaScript", "Master Frontend & Backend", "Deploy Projects", "Apply for Jobs"],
+            "data scientist": ["Learn Python", "Understand Statistics", "Master Pandas/Numpy", "Explore ML Algorithms", "Build ML Projects", "Apply for Data Roles"],
+            "ai engineer": ["Learn Python", "Study Linear Algebra", "Deep Learning Basics", "TensorFlow/PyTorch", "Work on AI Projects", "Get Internship or Job"],
+            "android developer": ["Learn Java/Kotlin", "Learn Android Studio", "Build Android UI", "Connect to Firebase", "Publish on Play Store"],
+            "ios developer": ["Learn Swift", "Xcode IDE", "Storyboard & SwiftUI", "Test on Simulators", "Publish to App Store"],
+            "mobile app developer": ["Learn Flutter/React Native", "Build Shared UI", "Connect to Firebase", "Integrate APIs", "Publish on Play Store"],
+            "iot engineer": ["Learn IoT Basics", "Work with Arduino/Raspberry Pi", "Build IoT Projects", "Connect to Cloud", "Secure IoT Devices"]
+          };
+    
+          const steps = roadmapSteps[goal] || ["Research", "Learn", "Practice", "Build", "Apply", "Succeed"];
+    
+          const start = document.createElement("div");
+          start.className = "step start";
+          start.textContent = "Start";
+          container.appendChild(start);
+    
+          steps.forEach(step => {
+            const arrow = document.createElement("div");
+            arrow.className = "arrow";
+            container.appendChild(arrow);
+    
+            const stepDiv = document.createElement("div");
+            stepDiv.className = "step";
+            stepDiv.textContent = step;
+            stepDiv.onclick = () => {
+              infoBox.innerHTML = `<h3>${step}</h3><p>${stepInfo[step] || "No info available."}</p>`;
+              infoBox.style.display = 'block';
+            };
+            container.appendChild(stepDiv);
+          });
+    
+          const lastArrow = document.createElement("div");
+          lastArrow.className = "arrow";
+          container.appendChild(lastArrow);
+    
+          const end = document.createElement("div");
+          end.className = "step end";
+          end.textContent = "🎯";
+          container.appendChild(end);
+        }
+      </script>
+</body>
+</html>
