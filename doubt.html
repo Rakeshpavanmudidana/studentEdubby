@@ -46,10 +46,10 @@
     }
 
     .container {
-      max-width: 500px;
+      max-width: 700px;
       margin: auto;
       padding: 2rem;
-      max-height: 500px; 
+      max-height: 650px; 
       overflow-y: scroll;
       border-radius: var(--border-radius);
       background: rgba(255, 255, 255, 0.1);
@@ -62,6 +62,8 @@
 
     .section {
       margin-bottom: 2rem;
+      width: 100%;
+      
     }
 
     .section h3 {
@@ -164,15 +166,16 @@
     <div class="section">
       <h3>Student Questions</h3>
       <div id="questionsContainer"></div>
-    </div>
-
-    <!-- Answer Section -->
-    <div class="section answer-box" id="answerSection">
+      <div class="section answer-box" id="answerSection">
       <h3>Write Your Solution</h3>
       <p><strong>Question:</strong> <span id="selectedQuestion"></span></p>
       <textarea id="answerInput" rows="4" placeholder="Write your answer here..."></textarea>
       <button onclick="submitAnswer()">Submit Answer</button>
     </div>
+    </div>
+
+    <!-- Answer Section -->
+    
   </div>
 
 
