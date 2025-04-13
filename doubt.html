@@ -171,6 +171,7 @@
       <p><strong>Question:</strong> <span id="selectedQuestion"></span></p>
       <textarea id="answerInput" rows="4" placeholder="Write your answer here..."></textarea>
       <button onclick="submitAnswer()">Submit Answer</button>
+      <button onclick="cancelAnswer()" style="margin-left: 10px; background-color: #ff4d4d;">Cancel</button>
     </div>
     </div>
 
@@ -320,10 +321,17 @@
               answerDiv.style.display = 'none';
       
               data.answers.forEach(ans => {
-                const p = document.createElement('p');
-                p.innerText = `• ${ans}`;
-                answerDiv.appendChild(p);
+                const answerCard = document.createElement('div');
+                answerCard.style.background = '#e9f5ff';
+                answerCard.style.color = '#000';
+                answerCard.style.padding = '10px';
+                answerCard.style.marginBottom = '10px';
+                answerCard.style.borderRadius = '12px';
+                answerCard.style.boxShadow = '0 2px 6px rgba(0,0,0,0.05)';
+                answerCard.innerText = ans;
+                answerDiv.appendChild(answerCard);
               });
+
       
               questionWrapper.appendChild(answerDiv);
             }
@@ -333,18 +341,18 @@
         }
       
         function openAnswerBox(id, questionText) {
-        const section = document.getElementById('answerSection');
-        section.style.display = 'block';
-        document.getElementById('selectedQuestion').innerText = questionText;
-        document.getElementById('answerInput').value = '';
-        section.dataset.currentDocId = id;
+            const section = document.getElementById('answerSection');
+            section.style.display = 'block';
+            document.getElementById('selectedQuestion').innerText = questionText;
+            document.getElementById('answerInput').value = '';
+            section.dataset.currentDocId = id;
 
-        const selectedQuestionDiv = Array.from(document.querySelectorAll('.question-text')).find(div => div.innerText === questionText);
-        if (selectedQuestionDiv) {
-          const questionWrapper = selectedQuestionDiv.closest('.question');
-          questionWrapper.appendChild(section);
-        }
-      }
+            const selectedQuestionDiv = Array.from(document.querySelectorAll('.question-text')).find(div => div.innerText === questionText);
+            if (selectedQuestionDiv) {
+              const questionWrapper = selectedQuestionDiv.closest('.question');
+              questionWrapper.appendChild(section);
+            }
+          }
       
         async function submitAnswer() {
           const id = document.getElementById('answerSection').dataset.currentDocId;
@@ -375,6 +383,16 @@
           document.getElementById('answerSection').style.display = 'none';
           loadQuestions();
         }
+        
+        
+        function cancelAnswer() {
+          const answerSection = document.getElementById('answerSection');
+          answerSection.style.display = 'none';
+          document.getElementById('answerInput').value = '';
+          document.getElementById('selectedQuestion').innerText = '';
+          }
+          window.cancelAnswer = cancelAnswer;
+
       
         // Load all questions on page load
         loadQuestions();
