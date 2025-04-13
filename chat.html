@@ -146,12 +146,11 @@
         
         
         // Generate or get existing unique user ID (anonymous)
-      let currentUser = localStorage.getItem("anonUserId");
+     let currentUser = localStorage.getItem("anonUserId");
       if (!currentUser) {
-      currentUser = "user_" + Math.random().toString(36).substr(2, 9);
-      localStorage.setItem("anonUserId", currentUser);
+        currentUser = "user_" + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem("anonUserId", currentUser);
       }
-
     
     // Firebase configuration
     const firebaseConfig = {
@@ -201,25 +200,31 @@
     onSnapshot(q, (snapshot) => {
       chatBox.innerHTML = "";
     
-      snapshot.forEach((docSnap) => {
-        const msg = docSnap.data();
-    
-        const messageDiv = document.createElement("div");
-        messageDiv.className = "message";
-        messageDiv.innerText = msg.text;
-    
-        if (msg.userId === currentUser) {
-          const delBtn = document.createElement("button");
-          delBtn.innerText = "Delete";
-          delBtn.className = "delete-btn";
-          delBtn.onclick = async () => {
-            await deleteDoc(doc(db, "messages", docSnap.id));
-          };
-          messageDiv.appendChild(delBtn);
-        }
-        messageDiv.appendChild(delBtn);
-        chatBox.appendChild(messageDiv);
-      });
+      onSnapshot(q, (snapshot) => {
+  chatBox.innerHTML = "";
+
+  snapshot.forEach((docSnap) => {
+    const msg = docSnap.data();
+
+    const messageDiv = document.createElement("div");
+    messageDiv.className = "message";
+    messageDiv.innerText = msg.text;
+
+    // Only allow delete if the message was sent by this user
+    if (msg.userId === currentUser) {
+      const delBtn = document.createElement("button");
+      delBtn.innerText = "Delete";
+      delBtn.className = "delete-btn";
+      delBtn.onclick = async () => {
+        await deleteDoc(doc(db, "messages", docSnap.id));
+      };
+      messageDiv.appendChild(delBtn); // Append only if user matches
+    }
+
+    chatBox.appendChild(messageDiv); // Append the message
+  });
+});
+
     });
     
    
