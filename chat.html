@@ -143,6 +143,15 @@
       query,
       orderBy
     } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+        
+        
+        // Generate or get existing unique user ID (anonymous)
+      let currentUser = localStorage.getItem("anonUserId");
+      if (!currentUser) {
+      currentUser = "user_" + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem("anonUserId", currentUser);
+      }
+
     
     // Firebase configuration
     const firebaseConfig = {
@@ -176,8 +185,9 @@
         input.value = '';
         return;
         }
-        await addDoc(collection(db, "messages"), {
+         await addDoc(collection(db, "messages"), {
           text,
+          userId: currentUser,
           timestamp: new Date()
         });
         input.value = "";
@@ -198,19 +208,22 @@
         messageDiv.className = "message";
         messageDiv.innerText = msg.text;
     
-        const delBtn = document.createElement("button");
-        delBtn.innerText = "Delete";
-        delBtn.className = "delete-btn";
-        delBtn.onclick = async () => {
-          await deleteDoc(doc(db, "messages", docSnap.id));
-        };
-    
+        if (msg.userId === currentUser) {
+          const delBtn = document.createElement("button");
+          delBtn.innerText = "Delete";
+          delBtn.className = "delete-btn";
+          delBtn.onclick = async () => {
+            await deleteDoc(doc(db, "messages", docSnap.id));
+          };
+          messageDiv.appendChild(delBtn);
+        }
         messageDiv.appendChild(delBtn);
         chatBox.appendChild(messageDiv);
       });
     });
     
-    
+   
+
     
       </script>
 </body>

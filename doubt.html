@@ -168,7 +168,6 @@
       <div id="questionsContainer"></div>
       <div class="section answer-box" id="answerSection">
       <h3>Write Your Solution</h3>
-      <p><strong>Question:</strong> <span id="selectedQuestion"></span></p>
       <textarea id="answerInput" rows="4" placeholder="Write your answer here..."></textarea>
       <button onclick="submitAnswer()">Submit Answer</button>
       <button onclick="cancelAnswer()" style="margin-left: 10px; background-color: #ff4d4d;">Cancel</button>
@@ -343,7 +342,6 @@
         function openAnswerBox(id, questionText) {
             const section = document.getElementById('answerSection');
             section.style.display = 'block';
-            document.getElementById('selectedQuestion').innerText = questionText;
             document.getElementById('answerInput').value = '';
             section.dataset.currentDocId = id;
 
