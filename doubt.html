@@ -333,12 +333,18 @@
         }
       
         function openAnswerBox(id, questionText) {
-          const section = document.getElementById('answerSection');
-          section.style.display = 'block';
-          document.getElementById('selectedQuestion').innerText = questionText;
-          document.getElementById('answerInput').value = '';
-          section.dataset.currentDocId = id;
+        const section = document.getElementById('answerSection');
+        section.style.display = 'block';
+        document.getElementById('selectedQuestion').innerText = questionText;
+        document.getElementById('answerInput').value = '';
+        section.dataset.currentDocId = id;
+
+        const selectedQuestionDiv = Array.from(document.querySelectorAll('.question-text')).find(div => div.innerText === questionText);
+        if (selectedQuestionDiv) {
+          const questionWrapper = selectedQuestionDiv.closest('.question');
+          questionWrapper.appendChild(section);
         }
+      }
       
         async function submitAnswer() {
           const id = document.getElementById('answerSection').dataset.currentDocId;
