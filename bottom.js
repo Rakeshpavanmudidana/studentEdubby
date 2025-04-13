@@ -27,3 +27,18 @@ navItems.forEach(item => {
   });
 });
 
+
+
+document.addEventListener('DOMContentLoaded', () => {
+        const navItems = document.querySelectorAll('.bottom-nav .nav-item');
+
+        navItems.forEach(item => {
+          item.addEventListener('click', () => {
+            // Remove active class from all items
+            navItems.forEach(i => i.classList.remove('active'));
+
+            // Add active class to clicked item
+            item.classList.add('active');
+          });
+        });
+      });
