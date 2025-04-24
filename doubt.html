@@ -16,10 +16,9 @@
               "firebase/database": "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"
           }
       }
-  </script> 
-</head>
-  <style>
-   :root {
+    </script> 
+    <style>
+     :root {
   --primary: #4682b4;
   --secondary: #add8e6;
   --light-bg: #f5faff;
@@ -153,50 +152,40 @@ button:hover {
     padding: 1rem;
   }
 }
-
-
-  </style>
+    </style>
+</head>
 <body>
-  
-  <h1>Ask & Solve Questions</h1>
+    <h1>Ask & Solve Questions</h1>
 
-  <div class="container">
-    <!-- Ask Section -->
-    <div class="section">
-      <h3>Ask a Question</h3>
-      <textarea id="questionInput" rows="3" placeholder="Drop your question here..."></textarea>
-      <button onclick="addQuestion()">Post Question</button>
+    <div class="container">
+        <!-- Ask Section -->
+        <div class="section">
+            <h3>Ask a Question</h3>
+            <textarea id="questionInput" rows="3" placeholder="Drop your question here..."></textarea>
+            <button onclick="addQuestion()">Post Question</button>
+        </div>
+
+        <!-- Question List -->
+        <div class="section" id="questionList">
+            <h3>Student Questions</h3>
+            <div id="questionsContainer"></div>
+            <div class="section answer-box" id="answerSection">
+                <h3>Write Your Solution</h3>
+                <p id="currentQuestionText"></p>
+                <textarea id="answerInput" rows="4" placeholder="Write your answer here..."></textarea>
+                <button onclick="submitAnswer()">Submit Answer</button>
+                <button onclick="cancelAnswer()" style="margin-left: 10px; background-color: #ff4d4d;">Cancel</button>
+            </div>
+        </div>
     </div>
 
-    <!-- Question List -->
-    <div class="section" id="questionList">
-      <h3>Student Questions</h3>
-      <div id="questionsContainer"></div>
-      <div class="section answer-box" id="answerSection">
-      <h3>Write Your Solution</h3>
-      <textarea id="answerInput" rows="4" placeholder="Write your answer here..."></textarea>
-      <button onclick="submitAnswer()">Submit Answer</button>
-      <button onclick="cancelAnswer()" style="margin-left: 10px; background-color: #ff4d4d;">Cancel</button>
-    </div>
-    </div>
-
-    <!-- Answer Section -->
-    
-  </div>
-
-
-
-
-
-
-
-  <button class="chatbot-toggler">
-    <span class="material-symbols-outlined">🤖</span>
-  </button>
+    <button class="chatbot-toggler">
+        <span class="material-symbols-outlined">🤖</span>
+    </button>
     <div class="chatbot">
         <header>
             <h2>AI ChatBot</h2>
-            <span class="close-btn">&times;</span>
+            <span class="close-btn">×</span>
         </header>
         <ul class="chatbox"></ul>
         <div class="chat-input">
@@ -204,228 +193,219 @@ button:hover {
             <button id="send-btn" class="send-btn">Send</button>
         </div>
     </div>
-    <button id="logoutButton"><img src="https://cdn.glitch.global/5be2e27e-1545-4ba2-abaa-45f2be7d62ad/logout.png?v=1744495496073" alt="Description" width="30" height="30"> </button>
+    <button id="logoutButton"><img src="https://cdn.glitch.global/5be2e27e-1545-4ba2-abaa-45f2be7d62ad/logout.png?v=1744495496073" alt="Description" width="30" height="30"></button>
     
     <div class="bottom-nav">
-        <a href="#" class="nav-item " data-tab="index">
-            <img class="imgs" src="https://cdn.glitch.global/5be2e27e-1545-4ba2-abaa-45f2be7d62ad/icons8-home-50.png?v=1744495457121" >
-          
+        <a href="#" class="nav-item" data-tab="index">
+            <img class="imgs" src="https://cdn.glitch.global/5be2e27e-1545-4ba2-abaa-45f2be7d62ad/icons8-home-50.png?v=1744495457121">
         </a>
         <a href="#" class="nav-item active" data-tab="doubt">
-          <img style="height: 40px;" class="imgs" src="https://cdn.glitch.global/5be2e27e-1545-4ba2-abaa-45f2be7d62ad/ChatGPT%20Image%20Apr%2012%2C%202025%2C%2003_07_40%20PM.png?v=1745512507036">
-          
+            <img style="height: 40px;" class="imgs" src="https://cdn.glitch.global/5be2e27e-1545-4ba2-abaa-45f2be7d62ad/ChatGPT%20Image%20Apr%2012%2C%202025%2C%2003_07_40%20PM.png?v=1745512507036">
         </a>
         <a href="#" class="nav-item" data-tab="chat">
-            <img class="imgs" src="https://cdn.glitch.global/5be2e27e-1545-4ba2-abaa-45f2be7d62ad/IMG_9922.PNG?v=1744495492376" >
+            <img class="imgs" src="https://cdn.glitch.global/5be2e27e-1545-4ba2-abaa-45f2be7d62ad/IMG_9922.PNG?v=1744495492376">
         </a>
         <a href="#" class="nav-item" data-tab="road map">
-          <img class="imgs" src="https://cdn.glitch.global/5be2e27e-1545-4ba2-abaa-45f2be7d62ad/IMG_9876.PNG?v=1744495472100">
+            <img class="imgs" src="https://cdn.glitch.global/5be2e27e-1545-4ba2-abaa-45f2be7d62ad/IMG_9876.PNG?v=1744495472100">
         </a>
-    
         <a href="#" class="nav-item" data-tab="profile">
-          <img style="height: 45px;" src="https://cdn.glitch.global/5be2e27e-1545-4ba2-abaa-45f2be7d62ad/icons8-male-user-50.png?v=1744495460649">
+            <img style="height: 45px;" src="https://cdn.glitch.global/5be2e27e-1545-4ba2-abaa-45f2be7d62ad/icons8-male-user-50.png?v=1744495460649">
         </a>
-      </div>
-      <div class="spinner" id="loadingPopup" style="display: none;">
+    </div>
+    <div class="spinner" id="loadingPopup" style="display: none;">
         <div class="spinner1"></div>
-      </div>
+    </div>
 
-      <script type="module" src="ChatBotscript.js"></script>
-      
-      <script type="module" src="bottom.js"> </script>
+    <script type="module" src="ChatBotscript.js"></script>
+    <script type="module" src="bottom.js"></script>
 
-      <script type="module">
+    <script type="module">
         import { getNotes } from "./script.js";
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import {
-          getFirestore,
-          collection,
-          addDoc,
-          getDocs,
-          doc,
-          updateDoc,
-          arrayUnion
+            getFirestore,
+            collection,
+            addDoc,
+            getDocs,
+            doc,
+            updateDoc,
+            arrayUnion
         } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
         const logoutButton = document.getElementById("logoutButton");
         let cookieuserName = "Studentname";
-    let cookieStudentbranch = "Studentbranch"
-    let cookicollegeName = "Studentcollegename";
+        let cookieStudentbranch = "Studentbranch";
+        let cookicollegeName = "Studentcollegename";
         const firebaseConfig = {
-          apiKey: "AIzaSyAEYRe6z2Zovdd6joWoUnsjvOzHyX-7JNQ",
-          authDomain: "edubuddy-3013d.firebaseapp.com",
-          projectId: "edubuddy-3013d",
-          storageBucket: "edubuddy-3013d.appspot.com",
-          messagingSenderId: "321353809164",
-          appId: "1:321353809164:web:9719009ed105a528dfdd29",
-          measurementId: "G-PJR8FR1C0Q",
-          databaseURL: "https://edubuddy-3013d-default-rtdb.firebaseio.com",
+            apiKey: "AIzaSyAEYRe6z2Zovdd6joWoUnsjvOzHyX-7JNQ",
+            authDomain: "edubuddy-3013d.firebaseapp.com",
+            projectId: "edubuddy-3013d",
+            storageBucket: "edubuddy-3013d.appspot.com",
+            messagingSenderId: "321353809164",
+            appId: "1:321353809164:web:9719009ed105a528dfdd29",
+            measurementId: "G-PJR8FR1C0Q",
+            databaseURL: "https://edubuddy-3013d-default-rtdb.firebaseio.com",
         };
 
         function getCookie(name) {
-          const value = `; ${document.cookie}`;
-          const parts = value.split(`; ${name}=`);
-          if (parts.length === 2) return parts.pop().split(';').shift();
-          return null;
-          }
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
 
-      
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-      
         const questionsCollection = collection(db, "questions");
-
         const loadingPopup = document.getElementById("loadingPopup");
-      
+
         async function addQuestion() {
-          loadingPopup.style.display = "block";
-          const question = document.getElementById('questionInput').value.trim();
+            loadingPopup.style.display = "block";
+            const question = document.getElementById('questionInput').value.trim();
 
-          let prompt = question + " Check if the given sentence contains vulgar, offensive, or inappropriate language, returning true if it does and false otherwise, with no additional output.";
-          loadingPopup.style.display = "none";
-          let mcp = await getNotes(prompt);
-          if (String(mcp).trim().toLowerCase() === "true") {
-          alert("Don't use vulgar, offensive, or inappropriate language");
-          console.log(typeof mcp);
-          document.getElementById('questionInput').value = '';
-          return;
-          }
-
-          if (question === '') return;
-          await addDoc(questionsCollection, { question, answers: [] });
-          document.getElementById('questionInput').value = '';
-          loadingPopup.style.display = "none";
-          loadQuestions();
-
-        }
-      
-        async function loadQuestions() {
-          const container = document.getElementById('questionsContainer');
-          container.innerHTML = '';
-      
-          const snapshot = await getDocs(questionsCollection);
-          snapshot.forEach(docSnap => {
-            const data = docSnap.data();
-            const questionWrapper = document.createElement('div');
-            questionWrapper.className = 'question';
-      
-            const questionText = document.createElement('div');
-            questionText.className = 'question-text';
-            questionText.innerText = data.question;
-            questionText.onclick = () => openAnswerBox(docSnap.id, data.question);
-            questionWrapper.appendChild(questionText);
-      
-            const answerBtn = document.createElement('button');
-            answerBtn.innerText = "Write Answer";
-            answerBtn.onclick = () => openAnswerBox(docSnap.id, data.question);
-            questionWrapper.appendChild(answerBtn);
-      
-            if (data.answers && data.answers.length > 0) {
-              const viewBtn = document.createElement('button');
-              viewBtn.innerText = "View Answers";
-              viewBtn.onclick = (e) => {
-                e.stopPropagation();
-                const answerDiv = questionWrapper.querySelector('.answer-display');
-                answerDiv.style.display = answerDiv.style.display === 'block' ? 'none' : 'block';
-              };
-              questionWrapper.appendChild(viewBtn);
-      
-              const answerDiv = document.createElement('div');
-              answerDiv.className = 'answer-display';
-              answerDiv.style.display = 'none';
-      
-              data.answers.forEach(ans => {
-                const answerCard = document.createElement('div');
-                answerCard.style.background = '#e9f5ff';
-                answerCard.style.color = '#000';
-                answerCard.style.padding = '10px';
-                answerCard.style.marginBottom = '10px';
-                answerCard.style.borderRadius = '12px';
-                answerCard.style.boxShadow = '0 2px 6px rgba(0,0,0,0.05)';
-                answerCard.innerText = ans;
-                answerDiv.appendChild(answerCard);
-              });
-
-      
-              questionWrapper.appendChild(answerDiv);
+            let prompt = question + " Check if the given sentence contains vulgar, offensive, or inappropriate language, returning true if it does and false otherwise, with no additional output.";
+            loadingPopup.style.display = "none";
+            let mcp = await getNotes(prompt);
+            if (String(mcp).trim().toLowerCase() === "true") {
+                alert("Don't use vulgar, offensive, or inappropriate language");
+                console.log(typeof mcp);
+                document.getElementById('questionInput').value = '';
+                return;
             }
-      
-            container.appendChild(questionWrapper);
-          });
+
+            if (question === '') return;
+            await addDoc(questionsCollection, { question, answers: [] });
+            document.getElementById('questionInput').value = '';
+            loadingPopup.style.display = "none";
+            loadQuestions();
         }
-      
+
+        async function loadQuestions() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            const snapshot = await getDocs(questionsCollection);
+            snapshot.forEach(docSnap => {
+                const data = docSnap.data();
+                const questionWrapper = document.createElement('div');
+                questionWrapper.className = 'question';
+
+                const questionText = document.createElement('div');
+                questionText.className = 'question-text';
+                questionText.innerText = data.question;
+                questionText.onclick = () => openAnswerBox(docSnap.id, data.question);
+                questionWrapper.appendChild(questionText);
+
+                const answerBtn = document.createElement('button');
+                answerBtn.innerText = "Write Answer";
+                answerBtn.onclick = () => openAnswerBox(docSnap.id, data.question);
+                questionWrapper.appendChild(answerBtn);
+
+                if (data.answers && data.answers.length > 0) {
+                    const viewBtn = document.createElement('button');
+                    viewBtn.innerText = "View Answers";
+                    viewBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        const answerDiv = questionWrapper.querySelector('.answer-display');
+                        answerDiv.style.display = answerDiv.style.display === 'block' ? 'none' : 'block';
+                    };
+                    questionWrapper.appendChild(viewBtn);
+
+                    const answerDiv = document.createElement('div');
+                    answerDiv.className = 'answer-display';
+                    answerDiv.style.display = 'none';
+
+                    data.answers.forEach(ans => {
+                        const answerCard = document.createElement('div');
+                        answerCard.style.background = '#e9f5ff';
+                        answerCard.style.color = '#000';
+                        answerCard.style.padding = '10px';
+                        answerCard.style.marginBottom = '10px';
+                        answerCard.style.border = '12px';
+                        answerCard.style.boxShadow = '0 2px 6px rgba(0,0,0,0.05)';
+                        answerCard.innerText = ans;
+                        answerDiv.appendChild(answerCard);
+                    });
+
+                    questionWrapper.appendChild(answerDiv);
+                }
+
+                container.appendChild(questionWrapper);
+            });
+        }
+
         function openAnswerBox(id, questionText) {
             const section = document.getElementById('answerSection');
+            const currentQuestionText = document.getElementById('currentQuestionText');
+
+            // Show the answer section and set the current question text
             section.style.display = 'block';
-            document.getElementById('answerInput').value = '';
+            currentQuestionText.innerText = `Answering: ${questionText}`;
             section.dataset.currentDocId = id;
 
-            const selectedQuestionDiv = Array.from(document.querySelectorAll('.question-text')).find(div => div.innerText === questionText);
-            if (selectedQuestionDiv) {
-              const questionWrapper = selectedQuestionDiv.closest('.question');
-              questionWrapper.appendChild(section);
-            }
-          }
-      
+            // Clear the answer input
+            document.getElementById('answerInput').value = '';
+        }
+
         async function submitAnswer() {
-          const id = document.getElementById('answerSection').dataset.currentDocId;
-          const answer = document.getElementById('answerInput').value.trim();
-          loadingPopup.style.display = "block";
-          let prompt = answer + " check whether the given sentence has vulgar language or not. If it exists then return true else return false. Note: don't return more than true or false.";
+            const section = document.getElementById('answerSection');
+            const id = section.dataset.currentDocId;
+            const answer = document.getElementById('answerInput').value.trim();
 
-          let mcp = await getNotes(prompt);
-          loadingPopup.style.display = "none";
-          
-          if (String(mcp).trim().toLowerCase() === "true") {
-          alert("Don't use vulgar language");
-          console.log(typeof mcp);
-          document.getElementById('answerInput').value = '';
-          return;
-          }
-          if (answer === '') {
-            alert("Please enter an answer.");
-            return;
-          }
-      
-          const qRef = doc(db, "questions", id);
-          await updateDoc(qRef, {
-            answers: arrayUnion(answer)
-          });
-      
-          alert("Answer submitted successfully!");
-          document.getElementById('answerSection').style.display = 'none';
-          loadQuestions();
+            loadingPopup.style.display = "block";
+            let prompt = answer + "Check if the given sentence contains vulgar, offensive, or inappropriate language, returning true if it does and false otherwise, with no additional output.";
+            let mcp = await getNotes(prompt);
+            console.log(mcp);
+            loadingPopup.style.display = "none";
+
+            if (String(mcp).trim().toLowerCase() === "true") {
+                alert("Don't use vulgar language");
+                document.getElementById('answerInput').value = '';
+                return;
+            }
+
+            if (answer === '') {
+                alert("Please enter an answer.");
+                return;
+            }
+
+            const qRef = doc(db, "questions", id);
+            await updateDoc(qRef, {
+                answers: arrayUnion(answer)
+            });
+
+            alert("Answer submitted successfully!");
+            section.style.display = 'none';
+            document.getElementById('answerInput').value = '';
+            document.getElementById('currentQuestionText').innerText = '';
+            loadQuestions();
         }
-        
-        logoutButton.addEventListener("click", function(){
-        
-        let result = confirm("Are you sure you want to logout?");
-        if (!result) {
-            return;
-        }
-        document.cookie = `${cookieuserName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-        document.cookie = `${cookieStudentbranch}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-        document.cookie = `${cookicollegeName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-        window.location.href = "index.html";
-    })
-        
-        
+
         function cancelAnswer() {
-          const answerSection = document.getElementById('answerSection');
-          answerSection.style.display = 'none';
-          document.getElementById('answerInput').value = '';
-          }
-          window.cancelAnswer = cancelAnswer;
+            const section = document.getElementById('answerSection');
+            section.style.display = 'none';
+            document.getElementById('answerInput').value = '';
+            document.getElementById('currentQuestionText').innerText = '';
+        }
 
-      
+        logoutButton.addEventListener("click", function() {
+            let result = confirm("Are you sure you want to logout?");
+            if (!result) {
+                return;
+            }
+            document.cookie = `${cookieuserName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+            document.cookie = `${cookieStudentbranch}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+            document.cookie = `${cookicollegeName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+            window.location.href = "index.html";
+        });
+
         // Load all questions on page load
         loadQuestions();
-      
-        // Make functions globally accessible if needed
+
+        // Make functions globally accessible
         window.addQuestion = addQuestion;
         window.submitAnswer = submitAnswer;
-        
-        
-      </script>
-      
+        window.cancelAnswer = cancelAnswer;
+    </script>
 </body>
 </html>
