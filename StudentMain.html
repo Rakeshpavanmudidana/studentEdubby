@@ -43,26 +43,8 @@
         }
 
     
-        #popup, #popup2 {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.1);
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            width: 100%;
-            max-width: 360px;
-            text-align: center;
-            z-index: 600; /* Higher than overlay */
-            display: none;
-            flex-direction: column;
-            align-items: center;
-        }
         #popup2 {
+            margin-top: 100px;
             background: rgba(255, 255, 255, 0.1);
         }
     
@@ -94,28 +76,79 @@
             box-shadow: 0 6px 20px rgba(255, 68, 68, 0.8);
         }
 
-        
+        #ClassDetailsDiv {
+    margin: 10px 0;
+    cursor: pointer;
+    display: block; /* Ensure the container is visible */
+}
+
+#buttonDiv {
+    display: flex; /* Arrange inner divs side by side */
+    margin-bottom: 0px; /* Spacing around the container */
+    justify-content: center; /* Center the inner divs */
+    
+}
+
+.div {
+    flex: 1; /* Equal width for each div */
+    margin: 0 5px; /* Spacing between divs */
+    border: 2px solid #000; /* Border styling */
+    border-bottom: none; /* No bottom border */
+    margin-bottom: 0;
+    margin-top: 20px;
+    border-radius: 10px; /* Rounded corners */
+    padding: 10px; /* Internal spacing */
+    text-align: center; /* Center text */
+    min-height: 50px; /* Ensure div has height */
+    max-width: 150px; /* Limit width for better appearance */
+    cursor: pointer; /* Pointer cursor on hover */
+    width: 1200px; /* Increased width */
+    size: 500px;
+    background: transparent ;
+    /* Removed width: 1000px to avoid conflicts */
+}
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6; /* Optional: makes the button look disabled */
+}
+.div.active{
+    background: linear-gradient(135deg, #ff00ff, #00eaff);
+}
+.question, .optionRadio, #label{
+    
+    margin-bottom: 10px;
+    text-align: left; /* Align text to the left */
+    font-size: 18px; /* Adjust font size as needed */
+    margin: 20px;
+}
+
+.question{
+    color: #00eaff;
+    font-weight: bold;
+}
+/* Ensure the loader is centered and on top */
+
 
     
 
     </style>
 </head>
 <body>
+    <div> 
+        <div class="spinner" id="loadingPopup" style="display: block;">
+            <div class="spinner1"></div>
+        </div>
     <div class="container" id="mainDiv" style="display: none;">
         <h1>Today's Classes</h1>
     </div>
     <!-- <button id="PendingClasses"> Pending classes </button> -->
-        
-    </div>
-    <div id="overlay"></div>
-    <div id="popup" style="display: none;">
-        <h1 id="popupHeading">Select the topic you want to read</h1>
-        <div id="popupContent">
-            
+    
+    <div id="buttonDiv" style="display: none;">
+            <button class="div" id="topicPlace"> Answer </button>
+            <button type="button" class="div" id="questionPlace"> Question </button>
         </div>
-        <button id="tocancleOptions"> Cancle </button>
     </div>
-    <div id="popup2" style="display: none;">
+    <div  class="container" id="popup2" style="display: none;">
         <h3 id="popup2Heading">Topic Name</h3>
         <hr>
         <div id="note-content" class="note-content"></div>
@@ -125,6 +158,7 @@
             <button id="next-btn">Next</button>
         </div>
         <button id="tocancle"> Cancle </button>
+    </div>
     </div>
 
     <button class="chatbot-toggler">
@@ -142,10 +176,8 @@
         </div>
     </div>
     
-    <div class="spinner" id="loadingPopup" style="display: block;">
-        <div class="spinner1"></div>
-    </div>
-    <button id="logoutButton"><img src="https://cdn.glitch.global/5be2e27e-1545-4ba2-abaa-45f2be7d62ad/logout.png?v=1744495496073" alt="Description" width="30" height="30"> </button>
+    
+    <button id="logoutButton"><img src="logout.png" alt="Description" width="30" height="30"> </button>
 
     <div class="bottom-nav">
         <a href="#" class="nav-item active" data-tab="index">
@@ -153,7 +185,7 @@
           
         </a>
         <a href="#" class="nav-item" data-tab="doubt">
-          <img style="height: 40px;" class="imgs" src="https://cdn.glitch.global/5be2e27e-1545-4ba2-abaa-45f2be7d62ad/ChatGPT%20Image%20Apr%2012%2C%202025%2C%2003_07_40%20PM.png?v=1744495457302">
+          <img style="height: 40px;" class="imgs" src="ChatGPT Image Apr 12, 2025, 03_07_40 PM.png">
           
         </a>
         <a href="#" class="nav-item" data-tab="chat">

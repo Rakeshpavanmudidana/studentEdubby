@@ -19,135 +19,141 @@
   </script> 
 </head>
   <style>
-    :root {
-      --primary: #4682b4;
-      --secondary: #add8e6;
-      --light-bg: #f5faff;
-      --box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-      --border-radius: 16px;
-    }
+   :root {
+  --primary: #4682b4;
+  --secondary: #add8e6;
+  --light-bg: #f5faff;
+  --box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  --border-radius: 16px;
+}
 
-    * {
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
+* {
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+}
 
-    body {
-      background: linear-gradient(135deg, #0f2027);
-      color: #ffffff;
-    }
+body {
+  background: linear-gradient(135deg, #0f2027);
+  color: #ffffff;
+  overflow-y: auto; /* Ensure the page can scroll */
+  min-height: 100vh; /* Ensure body takes at least full viewport height */
+}
 
-    h1 {
-      text-align: center;
-      color: var(--primary);
-      margin-bottom: 2rem;
-    }
+h1 {
+  text-align: center;
+  color: var(--primary);
+  margin-bottom: 2rem;
+}
 
-    .container {
-      max-width: 700px;
-      margin: auto;
-      padding: 2rem;
-      max-height: 650px; 
-      overflow-y: scroll;
-      border-radius: var(--border-radius);
-      background: rgba(255, 255, 255, 0.1);
-      box-shadow: 0 8px 32px rgba(6, 218, 218, 0.2);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      display: flex;
-      flex-direction: column;
-    }
+.container {
+  max-width: 700px;
+  margin: auto;
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(6, 218, 218, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  flex-direction: column;
+}
 
-    .section {
-      margin-bottom: 2rem;
-      width: 100%;
-      
-    }
+.section {
+  margin-bottom: 2rem;
+  width: 100%;
+  background-color: linear-gradient(135deg, #0f2027, #203a43, #2c5364);;
+}
 
-    .section h3 {
-      color: var(--primary);
-      margin-bottom: 10px;
-    }
+.section h3 {
+  color: var(--primary);
+  margin-bottom: 10px;
+}
 
-    textarea, input {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: var(--border-radius);
-      margin-bottom: 10px;
-      background-color: #f9f9f9;
-    }
+textarea, input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: var(--border-radius);
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
+}
 
-    button {
-      padding: 10px 20px;
-      background: linear-gradient(135deg, #ff00ff, #00eaff);
-      color: white;
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-      border: none;
-      border-radius: var(--border-radius);
-      cursor: pointer;
-      transition: 0.3s;
-      align-items: center;
-    }
+button {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #ff00ff, #00eaff);
+  color: white;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: 0.3s;
+  align-items: center;
+}
 
-    button:hover {
-      background-color: #3a6f99;
-    }
+button:hover {
+  background-color: #3a6f99;
+}
 
-    .question {
-      padding: 12px;
-      background-color: #f0f8ff;
-      border-radius: var(--border-radius);
-      margin-bottom: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      color: black;
-    }
+.question {
+  padding: 12px;
+  background: linear-gradient(135deg, #16362a, #105870, #224757);
+  border-radius: var(--border-radius);
+  margin-bottom: 10px;
+  box-shadow: 0 8px 32px rgba(6, 218, 218, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  width: 100%;
+  color: #00eaff;
+  text-shadow: #027202;
+  font-weight: bolder;
+}
 
-    .question-text {
-      cursor: pointer;
-      margin-bottom: 10px;
-    }
+.question-text {
+  cursor: pointer;
+  margin-bottom: 10px;
+}
 
-    .question button {
-      margin-right: 10px;
-      margin-top: 8px;
-      background: linear-gradient(135deg, #42e695, #3bb2b8);
-      color: white;
-      padding: 6px 14px;
-      border-radius: 12px;
-      border: none;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
+.question button {
+  margin-right: 10px;
+  margin-top: 8px;
+  background: linear-gradient(135deg, #42e695, #3bb2b8);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+}
 
-    .question button:hover {
-      background: #35a79c;
-    }
+.question button:hover {
+  background: #35a79c;
+}
 
-    .answer-display {
-      margin-top: 10px;
-      padding: 10px;
-      background-color: #ffffff;
-      color: #000;
-      border-radius: var(--border-radius);
-      border-left: 4px solid var(--primary);
-      display: none;
-    }
+.answer-display {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: linear-gradient(135deg, #42e695, #3bb2b8);
+  color: #000;
+  border-radius: var(--border-radius);
+  border-left: 4px solid var(--primary);
+  display: none;
+}
 
-    .answer-box {
-      display: none;
-      border-top: 1px solid #eee;
-      padding-top: 1rem;
-      margin-top: 1rem;
-    }
+.answer-box {
+  display: none;
+  border-top: 1px solid #eee;
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
 
-    @media (max-width: 600px) {
-      .container {
-        padding: 1rem;
-      }
-    }
+@media (max-width: 600px) {
+  .container {
+    padding: 1rem;
+  }
+}
+
 
   </style>
 <body>
@@ -163,7 +169,7 @@
     </div>
 
     <!-- Question List -->
-    <div class="section">
+    <div class="section" id="questionList">
       <h3>Student Questions</h3>
       <div id="questionsContainer"></div>
       <div class="section answer-box" id="answerSection">
@@ -252,6 +258,12 @@
           databaseURL: "https://edubuddy-3013d-default-rtdb.firebaseio.com",
         };
 
+        function getCookie(name) {
+          const value = `; ${document.cookie}`;
+          const parts = value.split(`; ${name}=`);
+          if (parts.length === 2) return parts.pop().split(';').shift();
+          return null;
+          }
 
       
         const app = initializeApp(firebaseConfig);
@@ -265,13 +277,11 @@
           loadingPopup.style.display = "block";
           const question = document.getElementById('questionInput').value.trim();
 
-          let prompt = question + " check whether the given sentence has vulgar language or not. If it exists then return true else return false. Note: don't return more than true or false.";
-
-          let mcp = await getNotes(prompt);
+          let prompt = question + " Check if the given sentence contains vulgar, offensive, or inappropriate language, returning true if it does and false otherwise, with no additional output.";
           loadingPopup.style.display = "none";
 
           if (String(mcp).trim().toLowerCase() === "true") {
-          alert("Don't use vulgar language");
+          alert("Don't use vulgar, offensive, or inappropriate language");
           console.log(typeof mcp);
           document.getElementById('questionInput').value = '';
           return;
@@ -280,6 +290,7 @@
           if (question === '') return;
           await addDoc(questionsCollection, { question, answers: [] });
           document.getElementById('questionInput').value = '';
+          loadingPopup.style.display = "none";
           loadQuestions();
 
         }

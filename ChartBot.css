@@ -27,7 +27,6 @@
     overflow: hidden;
     transform: scale(0);
     transition: transform 0.3s ease-in-out;
-    margin-bottom : 100px;  
     }
 
     .chatbot.show-chatbot {
@@ -137,7 +136,7 @@
         padding: 15px;
         border: 1px solid #ddd;
         border-radius: 4px;
-        margin: 20px ;
+        margin: 20px 0;
     }
 
     .navigation {

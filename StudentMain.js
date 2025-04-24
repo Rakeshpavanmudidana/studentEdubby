@@ -2,7 +2,7 @@ import { getTodaysTopics, getNotes, UpdateTopics, getCompletedRevision, addCompl
 import { formatMarkdownToHTML } from "./ChatBotscript.js";
 // Replace with the actual student ID // Replace with the actual college name
      // Replace with the actual branch name
-    let cookieuserName = "Studentusername";
+    let cookieuserName = "Studentname";
     let cookieStudentbranch = "Studentbranch"
     let cookicollegeName = "Studentcollegename";
     const branchName = document.cookie.split('; ').find(row => row.startsWith(cookieStudentbranch + '='))?.split('=')[1] || null;
@@ -12,13 +12,12 @@ import { formatMarkdownToHTML } from "./ChatBotscript.js";
     let innerpopup = document.getElementById("popupContent");
     let popup = document.getElementById("popup");
     let popup2 = document.getElementById("popup2");
-    let tocancleOptions = document.getElementById("tocancleOptions");
     let TodaysTopics = new Map();
     let Readingcancle = document.getElementById("tocancle");
     const loadingPopup = document.getElementById("loadingPopup");
     const logoutButton = document.getElementById("logoutButton");
     const cancelBreakButton = document.getElementById("cancelBreak");
-    const charsPerPage = 500; // Adjust this value to control content per page
+    const charsPerPage = 2000; // Adjust this value to control content per page
     let currentPage = 0;
     let pages = [];
     let topicContent="";
@@ -30,6 +29,9 @@ import { formatMarkdownToHTML } from "./ChatBotscript.js";
     let breakMinutes = 5;
     let studyTimer;
     let studySeconds = 0;
+    let buttonDiv = document.getElementById("buttonDiv");
+    let topicPlace = document.getElementById("topicPlace");
+    let questionPlace = document.getElementById("questionPlace");
 
 
     const noteContent = document.getElementById('note-content');
@@ -59,10 +61,6 @@ import { formatMarkdownToHTML } from "./ChatBotscript.js";
         ShowAllTopics(TodaysTopics);
     }
 
-    tocancleOptions.addEventListener("click", function(){
-        popup.style.display = "none";
-        overlay.style.display = "none";
-    })
 
     function splitContentIntoPages() {
         const trimmedContent = topicContent.trim();
@@ -94,6 +92,13 @@ import { formatMarkdownToHTML } from "./ChatBotscript.js";
 
 
     function displayPage() {
+        topicPlace.classList.add("active");
+        questionPlace.classList.remove("active");
+        prevBtn.style.display = "inline-block";
+        nextBtn.style.display = "inline-block";
+        pageInfo.style.display = "block";
+        questionPlace.disabled = false;
+        topicPlace.disabled = true;
         noteContent.innerHTML = `<p id="note">${pages[currentPage]}</p>`;
         pageInfo.textContent = `Page ${currentPage + 1} of ${pages.length}`;
         if ( currentPage === 0){
@@ -132,6 +137,8 @@ import { formatMarkdownToHTML } from "./ChatBotscript.js";
     prevBtn.addEventListener('click', function() {
         if (prevBtn.innerHTML === "Cncl") {
             popup2.style.display = "none";
+            mainDiv.style.display = "block";
+            buttonDiv.style.display = "none";
             stopStudyTimer();
 
         } else {
@@ -142,173 +149,9 @@ import { formatMarkdownToHTML } from "./ChatBotscript.js";
     nextBtn.addEventListener('click', async function () {
         if (nextBtn.textContent.trim() === "Test") {
             console.log("Starting test generation...");
-            loadingPopup.style.display = "block";
+            
     
-            try {
-                let prompt = topicContent + 
-                'By the topic Generate 3 multiple choice questions in JSON format only. Each question should have the question number as the key (e.g., "1", "2", "3") and include a "question" field, an "options" field with 4 choices, and a "correct_answer" field. Return only the JSON in the following structure: { "1": { "question": "Your question here?", "options": ["Option A", "Option B", "Option C", "Option D"], "correct_answer": "Correct Option" }, "2": { "question": "Your question here?", "options": ["Option A", "Option B", "Option C", "Option D"], "correct_answer": "Correct Option" }, "3": { "question": "Your question here?", "options": ["Option A", "Option B", "Option C", "Option D"], "correct_answer": "Correct Option" } }';
-
-                let mcp = await getNotes(prompt);
-                mcp = mcp.replace("```json", '');
-                mcp = mcp.replace("```", '');
-                console.log(mcp);   
-                mcp = JSON.parse(mcp);
-                noteContent.innerHTML = "";
-                for (const [key, value] of Object.entries(mcp)) {
-                    console.log(key, value);
-                
-                    const mcqDiv = document.createElement("div");
-                    mcqDiv.className = "mcqDiv";  // changed from id to class (id should be unique)
-                
-                    const p = document.createElement("p");
-                    p.textContent = key + ": " + value["question"];
-                    p.className = "question";
-                    mcqDiv.appendChild(p);
-                
-                    for (let i = 0; i < value["options"].length; i++) {
-                        const optionValue = value["options"][i];
-                
-                        const label = document.createElement("label");
-                        label.style.display = "block";
-                
-                        const radio = document.createElement("input");
-                        radio.type = "radio";
-                        radio.value = optionValue;
-                        radio.name = `question_${key}`;
-                        radio.dataset.key = key;  // store key to find later
-                        radio.dataset.index = i;  // store index
-                        radio.className = "optionRadio";
-                
-                        label.appendChild(radio);
-                
-                        const textNode = document.createTextNode(" " + optionValue);
-                        label.appendChild(textNode);
-                
-                        // Add span for result (tick or cross)
-                        const resultSpan = document.createElement("span");
-                        resultSpan.className = `resultSpan_${key}_${i}`;
-                        resultSpan.style.marginLeft = "10px";
-                        label.appendChild(resultSpan);
-                
-                        mcqDiv.appendChild(label);
-                    }
-                
-                    noteContent.appendChild(mcqDiv);
-                }
-                
-                // Create buttons
-                const submitButton = document.createElement("button");
-                submitButton.textContent = "Submit";
-                
-                const completedReading = document.createElement("button");
-                completedReading.textContent = "Completed Reading";
-                completedReading.style.display = "none";
-                
-                noteContent.appendChild(submitButton);
-                noteContent.appendChild(completedReading);
-                
-                // Handle Submit
-                submitButton.addEventListener("click", function () {
-                    for (const key of Object.keys(mcp)) {
-                        const correctAnswer = mcp[key]["correct_answer"];
-                        const selected = document.querySelector(`input[name="question_${key}"]:checked`);
-                
-                        const allOptions = document.querySelectorAll(`input[name="question_${key}"]`);
-                
-                        allOptions.forEach((opt, idx) => {
-                            const span = document.querySelector(`.resultSpan_${key}_${idx}`);
-                            span.textContent = ""; // clear existing
-                
-                            // ✅ Show tick for correct answer
-                            if (opt.value === correctAnswer) {
-                                span.textContent = "✅";
-                            }
-                
-                            // ❌ Show wrong mark for selected wrong answer
-                            if (selected && opt.checked && opt.value !== correctAnswer) {
-                                span.textContent = "❌";
-                            }
-                
-                            // Disable all options
-                            opt.disabled = true;
-                        });
-                    }
-                
-                    // Hide Submit, Show Completed Reading
-                    submitButton.style.display = "none";
-                    completedReading.style.display = "inline-block";
-                });
-                completedReading.addEventListener("click", async function () {
-                    // Get the current subject map
-                    const subjectMap = TodaysTopics.get(CurrentSubject);
-                
-                    // Initialize lesson if not exists
-                    if (!subjectMap[CurrentLessonname]) {
-                        subjectMap[CurrentLessonname] = "";
-                    }
-                
-                    // Convert topic list to array safely
-                    const topicList = subjectMap[CurrentLessonname]
-                        ? subjectMap[CurrentLessonname].split(',').map(t => t.trim())
-                        : [];
-                
-                    // Remove current topic
-                    console.log(CurrentTopic);
-                    const updatedTopicList = topicList.filter(topic => topic !== CurrentTopic);
-                    // const 
-                    console.log(updatedTopicList);  
-                
-                    // Update the map
-                    subjectMap[CurrentLessonname] = updatedTopicList.join(',');
-                    console.log(subjectMap[CurrentLessonname], date);
-                    
-
-                
-                    // Show loading
-                    loadingPopup.style.display = "block";
-                
-                    // Update Firebase
-                    await UpdateTopics(
-                        collegeName,
-                        branchName,
-                        StudentId,
-                        CurrentSubject,
-                        CurrentLessonname,
-                        subjectMap[CurrentLessonname],
-                        date
-                    );
-                    let Completed = await getCompletedRevision(collegeName, branchName, StudentId, date, CurrentSubject, CurrentLessonname);
-                    // if (Completed !== "")
-                    console.log(Completed);
-                    Completed = Completed + ',' + CurrentTopic;
-                    console.log(Completed);
-                    
-                    await addCompleteRevisiomToStudent(collegeName,
-                        branchName,
-                        StudentId,
-                        CurrentSubject,
-                        CurrentLessonname,
-                        Completed,
-                        date);
-                
-                    // Hide popups and UI elements
-                    loadingPopup.style.display = "none";
-                    popup2.style.display = "none";
-                    stopStudyTimer();
-                    divToRemove.style.display = "none";
-                    currentPage = 0;
-                    await loadTadaysTopics( collegeName, branchName, StudentId, date );
-                    showTopicsToRevision();
-                });
-                
-                
-                
-                
-            } catch (error) {
-                console.error("Error fetching questions:", error);
-            } finally {
-                loadingPopup.style.display = "none";
-            }
+            getMultipleChoiceQuestion();
         } else {
             nextPage();
         }
@@ -317,76 +160,112 @@ import { formatMarkdownToHTML } from "./ChatBotscript.js";
 
     function ShowAllTopics(AllTopics) {
         mainDiv.innerHTML = "";
-        mainDiv.innerHTML = `<h2>Today's Classes</h2>`
-        if ( AllTopics === ''){
+        mainDiv.innerHTML = `<h2>Today's Classes</h2>`;
+        if (AllTopics === '') {
             let p = document.createElement("p");
             p.textContent = "There is no topics";
             mainDiv.appendChild(p);
         }
 
+        // Add CSS for transitions
+        const style = document.createElement("style");
+        style.textContent = `
+            #LessonViseDiv {
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
+                opacity: 0;
+            }
+            #LessonViseDiv.active {
+                max-height: 1000px; /* Adjust based on content */
+                opacity: 1;
+            }
+            #innerDiv {
+            cursor: pointer;
+            height: auto;
+            padding: 10px;
+            box-sizing: border-box; /* Prevent padding from increasing size */
+            transition: background-color 0.3s;
+        }
+        `;
+        document.head.appendChild(style);
+
         for (const [key, value] of AllTopics) {
-            
             const innerdiv = document.createElement("div");
             innerdiv.id = "innerDiv";
             const h3 = document.createElement("h3");
             const hr = document.createElement("hr");
             const p = document.createElement("p");
+            p.id = "heading";
             p.textContent = "Click To get the topics.";
             h3.textContent = key;
             innerdiv.appendChild(h3);
             innerdiv.appendChild(hr);
             innerdiv.appendChild(p);
             mainDiv.appendChild(innerdiv);
+            let LessonViseDiv;
             CurrentSubject = key;
-
-            innerdiv.addEventListener("click", function(){
-                popup.style.display = "block";
-                overlay.style.display = "block";
-                innerpopup.innerHTML = "";
-                if (value === null) {
+            if (value === null) {
+                let p = document.createElement("p");
+                p.textContent = "You Complete all Topics";
+                innerpopup.appendChild(p);
+            }
+            for (const lesson of Object.keys(value)) {
+                LessonViseDiv = document.createElement("div");
+                LessonViseDiv.id = "LessonViseDiv";
+                const h4 = document.createElement("h4");
+                h4.id = "lessonName";
+                h4.textContent = lesson;
+                const hrInLessonViseDiv = document.createElement("hr");
+                
+                LessonViseDiv.appendChild(h4);
+                LessonViseDiv.appendChild(hrInLessonViseDiv);
+                innerdiv.appendChild(LessonViseDiv);
+                let topics = value[lesson] ? value[lesson].split(",").map(t => t.trim()).filter(t => t !== '') : [];
+                if (topics.length === 0) {
                     let p = document.createElement("p");
                     p.textContent = "You Complete all Topics";
-                    innerpopup.appendChild(p);
+                    LessonViseDiv.appendChild(p);
                 }
-                for ( const lesson of Object.keys(value) )
-                {
-                    const LessonViseDiv = document.createElement("div");
-                    LessonViseDiv.id = "LessonViseDiv"
-                    const h4 = document.createElement("h4");
-                    h4.id = "lessonName"
-                    h4.textContent = lesson;
-                    const hrInLessonViseDiv = document.createElement("hr");
-                    
-                    
-                    LessonViseDiv.appendChild(h4);
-                    LessonViseDiv.appendChild(hrInLessonViseDiv);
-                    innerpopup.appendChild(LessonViseDiv);
-                    let topics = value[lesson] ? value[lesson].split(",").map(t => t.trim()).filter(t => t !== ''): [];
-                    if ( topics.length === 0 ) {
-                        let p = document.createElement("p");
-                        p.textContent = "You Complete all Topics";
-                        LessonViseDiv.appendChild(p);
-                    }
-                    showTopics(topics, key, lesson);
+                showTopics(topics, key, LessonViseDiv);
 
-                    console.log(topics);
+                console.log(topics);
+            }
+
+            innerdiv.addEventListener("click", function() {
+                // Close all other LessonViseDivs
+                document.querySelectorAll('#LessonViseDiv.active').forEach(div => {
+                    div.classList.remove('active');
+                });
+
+                if (p.style.display === "none") {
+                    LessonViseDiv.classList.remove('active');
+                    p.style.display = "block";
                 }
-            })
-
-
+                else if (LessonViseDiv.classList.contains('active')) {
+                    LessonViseDiv.classList.remove('active');
+                    p.style.display = "block";
+                } else {
+                    LessonViseDiv.classList.add('active');
+                    p.style.display = "none";
+                }
+            });
         }
-        
     }
 
     Readingcancle.addEventListener("click", function(){
         currentPage = 0;
         popup2.style.display = "none";
+        stopStudyTimer();
+        buttonDiv.style.display = "none";
+        mainDiv.style.display = "block";
+
     })
 
 
     date = getFullDate();
 
-    function showTopics(topics, key, lesson) {
+    function showTopics(topics, key, LessonViseDiv) {
 
         for (const topic of topics) {
             if ( topic == "" ) 
@@ -405,11 +284,14 @@ import { formatMarkdownToHTML } from "./ChatBotscript.js";
                 divToRemove = Topicdiv;
                 CurrentTopic = p.textContent;
                 console.log(CurrentTopic);
+                mainDiv.style.display = "none";
+                
                 CurrentLessonname = document.getElementById("lessonName").textContent;
                 console.log(CurrentLessonname);
                 const notes = await getNotes(" give a note on " + topic + " in " + key + " subject");
                 loadingPopup.style.display = "none";
                 popup2.style.display = "block";
+                document.getElementById("buttonDiv").style.display = "block";
                 startStudyTimer();
                 document.getElementById("popup2Heading").textContent = topic;
                 // const hrInLessonViseDiv = document.createElement("hr");
@@ -417,6 +299,8 @@ import { formatMarkdownToHTML } from "./ChatBotscript.js";
                 // popup2.appendChild(hrInLessonViseDiv);
                 // popup2.appendChild(noteDiv);
                 splitContentIntoPages();
+                topicPlace.classList.add("active"); 
+                topicPlace.disabled = true;
                 displayPage();
             })
     
@@ -497,7 +381,196 @@ import { formatMarkdownToHTML } from "./ChatBotscript.js";
         console.log('timerDisplay ', `${seconds}`);
       }
     
+      async function getMultipleChoiceQuestion() {
+        loadingPopup.style.display = "block";
+        try {
+            let prompt = topicContent + 
+            'By the topic Generate 3 multiple choice questions in JSON format only. Each question should have the question number as the key (e.g., "1", "2", "3") and include a "question" field, an "options" field with 4 choices, and a "correct_answer" field. Return only the JSON in the following structure: { "1": { "question": "Your question here?", "options": ["Option A", "Option B", "Option C", "Option D"], "correct_answer": "Correct Option" }, "2": { "question": "Your question here?", "options": ["Option A", "Option B", "Option C", "Option D"], "correct_answer": "Correct Option" }, "3": { "question": "Your question here?", "options": ["Option A", "Option B", "Option C", "Option D"], "correct_answer": "Correct Option" } }';
 
+            let mcp = await getNotes(prompt);
+            mcp = mcp.replace("```json", '');
+            mcp = mcp.replace("```", '');
+            console.log(mcp);   
+            mcp = JSON.parse(mcp);
+            noteContent.innerHTML = "";
+            for (const [key, value] of Object.entries(mcp)) {
+                console.log(key, value);
+            
+                const mcqDiv = document.createElement("div");
+                mcqDiv.className = "mcqDiv";  // changed from id to class (id should be unique)
+            
+                const p = document.createElement("p");
+                p.textContent = key + ": " + value["question"];
+                p.className = "question";
+                mcqDiv.appendChild(p);
+            
+                for (let i = 0; i < value["options"].length; i++) {
+                    const optionValue = value["options"][i];
+            
+                    const label = document.createElement("label");
+                    label.style.display = "block";
+                    label.id = "label";
+            
+                    const radio = document.createElement("input");
+                    radio.type = "radio";
+                    radio.value = optionValue;
+                    radio.name = `question_${key}`;
+                    radio.dataset.key = key;  // store key to find later
+                    radio.dataset.index = i;  // store index
+                    radio.className = "optionRadio";
+            
+                    label.appendChild(radio);
+            
+                    const textNode = document.createTextNode(" " + optionValue);
+                    label.appendChild(textNode);
+            
+                    // Add span for result (tick or cross)
+                    const resultSpan = document.createElement("span");
+                    resultSpan.className = `resultSpan_${key}_${i}`;
+                    resultSpan.style.marginLeft = "10px";
+                    label.appendChild(resultSpan);
+            
+                    mcqDiv.appendChild(label);
+                }
+            
+                noteContent.appendChild(mcqDiv);
+            }
+            
+            // Create buttons
+            prevBtn.style.display = "none";
+            nextBtn.style.display = "none";
+            topicPlace.classList.remove("active");
+            questionPlace.classList.add("active");
+            pageInfo.style.display = "none";
+            questionPlace.disabled = true;
+            topicPlace.disabled = false;
+            currentPage = 0;
+            const submitButton = document.createElement("button");
+            submitButton.textContent = "Submit";
+            
+            const completedReading = document.createElement("button");
+            completedReading.textContent = "Completed Reading";
+            completedReading.style.display = "none";
+            
+            noteContent.appendChild(submitButton);
+            noteContent.appendChild(completedReading);
+            
+            // Handle Submit
+            submitButton.addEventListener("click", function () {
+                for (const key of Object.keys(mcp)) {
+                    const correctAnswer = mcp[key]["correct_answer"];
+                    const selected = document.querySelector(`input[name="question_${key}"]:checked`);
+            
+                    const allOptions = document.querySelectorAll(`input[name="question_${key}"]`);
+            
+                    allOptions.forEach((opt, idx) => {
+                        const span = document.querySelector(`.resultSpan_${key}_${idx}`);
+                        span.textContent = ""; // clear existing
+            
+                        // ✅ Show tick for correct answer
+                        if (opt.value === correctAnswer) {
+                            span.textContent = "✅";
+                        }
+            
+                        // ❌ Show wrong mark for selected wrong answer
+                        if (selected && opt.checked && opt.value !== correctAnswer) {
+                            span.textContent = "❌";
+                        }
+            
+                        // Disable all options
+                        opt.disabled = true;
+                    });
+                }
+            
+                // Hide Submit, Show Completed Reading
+                submitButton.style.display = "none";
+                completedReading.style.display = "inline-block";
+            });
+            completedReading.addEventListener("click", async function () {
+                // Get the current subject map
+                const subjectMap = TodaysTopics.get(CurrentSubject);
+            
+                // Initialize lesson if not exists
+                if (!subjectMap[CurrentLessonname]) {
+                    subjectMap[CurrentLessonname] = "";
+                }
+            
+                // Convert topic list to array safely
+                const topicList = subjectMap[CurrentLessonname]
+                    ? subjectMap[CurrentLessonname].split(',').map(t => t.trim())
+                    : [];
+            
+                // Remove current topic
+                console.log(CurrentTopic);
+                const updatedTopicList = topicList.filter(topic => topic !== CurrentTopic);
+                // const 
+                console.log(updatedTopicList);  
+            
+                // Update the map
+                subjectMap[CurrentLessonname] = updatedTopicList.join(',');
+                console.log(subjectMap[CurrentLessonname], date);
+                
+
+            
+                // Show loading
+                loadingPopup.style.display = "block";
+            
+                // Update Firebase
+                await UpdateTopics(
+                    collegeName,
+                    branchName,
+                    StudentId,
+                    CurrentSubject,
+                    CurrentLessonname,
+                    subjectMap[CurrentLessonname],
+                    date
+                );
+                let Completed = await getCompletedRevision(collegeName, branchName, StudentId, date, CurrentSubject, CurrentLessonname);
+                // if (Completed !== "")
+                console.log(Completed);
+                Completed = Completed + ',' + CurrentTopic;
+                console.log(Completed);
+                
+                await addCompleteRevisiomToStudent(collegeName,
+                    branchName,
+                    StudentId,
+                    CurrentSubject,
+                    CurrentLessonname,
+                    Completed,
+                    date);
+            
+                // Hide popups and UI elements
+                loadingPopup.style.display = "none";
+                popup2.style.display = "none";
+                stopStudyTimer();
+                divToRemove.style.display = "none";
+                currentPage = 0;
+                await loadTadaysTopics( collegeName, branchName, StudentId, date );
+                showTopicsToRevision();
+                buttonDiv.style.display = "none";
+                mainDiv.style.display = "block";    
+            });
+            
+            
+            
+            
+        } catch (error) {
+            console.error("Error fetching questions:", error);
+        } finally {
+            loadingPopup.style.display = "none";
+        }
+      }
+
+
+      topicPlace.addEventListener("click", function(){ 
+        displayPage();
+        currentPage = 0;
+      })
+
+        questionPlace.addEventListener("click", function(){
+            getMultipleChoiceQuestion();
+        });
 
     await loadTadaysTopics(collegeName, branchName, StudentId, date);
     showTopicsToRevision();
+    

@@ -17,23 +17,135 @@
     </script> 
 </head>
 <style>
-    h1 {
-      margin-bottom: 20px;
-      color: #ffcc00;
-    }
+    /* Ensure the page is scrollable and centered */
+body {
+  margin: 0;
+  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: Arial, sans-serif; /* Added for better typography */
+}
 
-    #chatBox {
-      background-color: rgba(255, 255, 255, 0.1);
-      width: 80%;
-      max-width: 700px;
-      height: 300px;
-      overflow-y: scroll;
-      border-radius: 10px;
-      padding: 10px;
-      border: 1px solid #aaa;
-    }
+/* Header styling */
+h1 {
+  margin-bottom: 20px;
+  color: #ffcc00;
+  font-size: 2rem; /* Slightly larger for prominence */
+  text-align: center; /* Center for better aesthetics */
+}
 
-    .message {
+/* Chat box styling */
+
+
+/* Message styling */
+.message {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 12px; /* Slightly more padding for readability */
+  border-radius: 5px;
+  margin: 8px 0; /* Slightly smaller margin for tighter spacing */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s ease; /* Smooth hover effect */
+}
+
+/* Hover effect for messages */
+.message:hover {
+  background: rgba(255, 255, 255, 0.15); /* Slightly brighter on hover */
+}
+
+/* Delete button styling */
+.delete-btn {
+  background-color: crimson;
+  color: white;
+  border: none;
+  padding: 6px 12px; /* Slightly larger for better clickability */
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  max-width: 70px;
+  font-size: 0.9rem; /* Slightly smaller font for balance */
+  transition: transform 0.1s ease, background 0.2s ease; /* Smooth interactions */
+}
+
+/* Button hover and active states */
+.delete-btn:hover {
+  background-color: #b22222; /* Slightly darker crimson */
+  transform: scale(1.05); /* Subtle zoom on hover */
+}
+
+.delete-btn:active {
+  transform: scale(0.95); /* Shrink slightly on click */
+}
+
+/* Input section styling */
+#inputSection {
+  margin-top: 20px;
+  display: flex;
+  gap: 12px; /* Slightly larger gap for clarity */
+  width: 80%; /* Match chat box width */
+  max-width: 700px; /* Consistent with chat box */
+  justify-content: center; /* Center input section */
+}
+
+/* Message input styling */
+#messageInput {
+  padding: 12px; /* Slightly more padding for comfort */
+  width: 100%; /* Full width within input section */
+  max-width: 400px; /* Slightly wider but capped */
+  border-radius: 5px;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.2); /* Slightly more opaque for visibility */
+  color: white; /* Ensure text is readable */
+  font-size: 1rem; /* Consistent font size */
+  transition: box-shadow 0.2s ease; /* Smooth focus effect */
+}
+
+/* Input focus state */
+#messageInput:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(255, 204, 0, 0.5); /* Glow in #ffcc00 theme */
+}
+
+/* Send button styling */
+#sendBtn {
+  padding: 12px 24px; /* Slightly larger for better clickability */
+  background-color: green;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem; /* Consistent font size */
+  transition: transform 0.1s ease, background 0.2s ease; /* Smooth interactions */
+}
+
+/* Send button hover and active states */
+#sendBtn:hover {
+  background-color: #006400; /* Slightly darker green */
+  transform: scale(1.05); /* Subtle zoom on hover */
+}
+
+#sendBtn:active {
+  transform: scale(0.95); /* Shrink slightly on click */
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 600px) {
+  #chatBox {
+    width: 90%; /* Wider on small screens */
+    min-height: 200px; /* Smaller base height */
+    max-height: 60vh; /* Adjust for smaller viewports */
+  }
+
+  #inputSection {
+    width: 90%; /* Match chat box width */
+    flex-direction: column; /* Stack input and button vertically */
+    align-items: stretch; /* Full-width elements */
+    gap: 10px;
+  }
+  .message {
       background: rgba(255, 255, 255, 0.1);
       padding: 10px;
       border-radius: 5px;
@@ -43,38 +155,16 @@
       align-items: center;
     }
 
-    .delete-btn {
-      background-color: crimson;
-      color: white;
-      border: none;
-      padding: 5px 10px;
-      margin-left: 10px;
-      cursor: pointer;
-      border-radius: 5px;
-      max-width: 70px;
-    }
+  #messageInput {
+    max-width: none; /* Full width on small screens */
+  }
 
-    #inputSection {
-      margin-top: 20px;
-      display: flex;
-      gap: 10px;
-    }
-
-    #messageInput {
-      padding: 10px;
-      width: 300px;
-      border-radius: 5px;
-      border: none;
-    }
-
-    #sendBtn {
-      padding: 10px 20px;
-      background-color: green;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+  #sendBtn {
+    padding: 10px; /* Slightly smaller padding */
+    width: 100%; /* Full-width button */
+    text-align: center; /* Center text */
+  }
+}
 </style>
 <body>
 
@@ -169,17 +259,17 @@
     // Send message
     const sendBtn = document.getElementById("sendBtn");
     sendBtn.addEventListener("click", async () => {
+      loadingPopup.style.display = "block";
       const input = document.getElementById("messageInput");
       const text = input.value.trim();
     
       if (text) {
-        let prompt = text + " check whether the given sentence has vulgar language or not. If it exists then return true else return false. Note: don't return more than true or false.";
-
+        let prompt = text + " Check if the given sentence contains vulgar, offensive, or inappropriate language, returning true if it does and false otherwise, with no additional output.";
         let mcp = await getNotes(prompt);
         loadingPopup.style.display = "none";
 
         if (String(mcp).trim().toLowerCase() === "true") {
-        alert("Don't use vulgar language");
+        alert("Don't use vulgar, offensive or inappropriate language");
         console.log(typeof mcp);
         input.value = '';
         return;
@@ -190,6 +280,7 @@
           timestamp: new Date()
         });
         input.value = "";
+        loadingPopup.style.display = "none";  
       }
     });
     

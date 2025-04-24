@@ -24,14 +24,36 @@ body {
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.18);
     width: 100%;
-    max-width: 360px;
+    max-width: 1000px;
     text-align: center;
     transition: transform 0.3s ease;
-    display: block;
     flex-direction: column;
     align-items: center;
-  
 }
+#note-content {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(6, 218, 218, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    width: 100%;
+    max-width: 1000px;
+    text-align: center;
+    transition: transform 0.3s ease;
+    flex-direction: column;
+    align-items: center;
+    min-height: fit-content; /* Ensure minimum height fits content */
+    overflow: visible; /* Prevent scrolling */
+}
+.container{
+    margin-bottom: 100px ;
+    margin-top: 100px;
+}
+#innerDiv, #LessonViseDiv, #topicDiv{
+    display: block;
+}
+
 
 #topicDiv{
     background: linear-gradient(135deg, #16362a, #105870, #224757);
@@ -40,6 +62,7 @@ body {
 
 #LessonViseDiv{
     background: linear-gradient(135deg, #0f2027, #2233385d, #2c5364);
+    transition: 3s;
 }
 #popupContent{
     margin-top: 30px;
@@ -321,23 +344,24 @@ h5{
     align-items: center;
 
 }
-#innerDiv:hover{
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(161, 89, 209, 0.8); /* Lighter green shadow on hover */
-    font-weight: bold;
 
-}
 
 #innerDiv{
     align-items: center;
     margin-top: 20px;
+    
 }
 
-p{
-    text-align: center;
-    color: rgba(129, 202, 11, 0.767);
+#heading{
+    text-align: center; /* Horizontal text alignment */
+    margin-top: 50px;
+    font-size: 20px;
+    color: rgba(129, 202, 11, 0.767); /* Existing color */
+    display: flex; /* Use Flexbox for centering */
+    justify-content: center; /* Horizontal centering */
+    align-items: center; /* Vertical centering */
+    box-sizing: border-box; /* Prevent margin/padding issues */
 }
-
 /* Style for h3 */
 h3 {
     color: rgb(10, 224, 240);
@@ -494,3 +518,5 @@ hr {
     border-radius: 10px;
     cursor: pointer;
   }
+  
+/* Create a blurred background */
