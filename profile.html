@@ -49,5 +49,22 @@
 
       <script type="module" src="ChatBotscript.js"></script>
       <script type="module" src="bottom.js"> </script>
+      <script>
+        const logoutButton = document.getElementById("logoutButton");
+        let cookieuserName = "Studentname";
+    let cookieStudentbranch = "Studentbranch"
+    let cookicollegeName = "Studentcollegename";
+        logoutButton.addEventListener("click", function(){
+        
+        let result = confirm("Are you sure you want to logout?");
+        if (!result) {
+            return;
+        }
+        document.cookie = `${cookieuserName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+        document.cookie = `${cookieStudentbranch}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+        document.cookie = `${cookicollegeName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+        window.location.href = "index.html";
+    })
+      </script>
 </body>
 </html>
