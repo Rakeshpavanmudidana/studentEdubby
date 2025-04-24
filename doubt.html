@@ -62,7 +62,7 @@ h1 {
 .section {
   margin-bottom: 2rem;
   width: 100%;
-  background-color: linear-gradient(135deg, #0f2027, #203a43, #2c5364);;
+  background-color: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
 }
 
 .section h3 {
@@ -141,10 +141,12 @@ button:hover {
 }
 
 .answer-box {
-  display: none;
   border-top: 1px solid #eee;
   padding-top: 1rem;
   margin-top: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius);
+  padding: 1rem;
 }
 
 @media (max-width: 600px) {
@@ -169,13 +171,6 @@ button:hover {
         <div class="section" id="questionList">
             <h3>Student Questions</h3>
             <div id="questionsContainer"></div>
-            <div class="section answer-box" id="answerSection">
-                <h3>Write Your Solution</h3>
-                <p id="currentQuestionText"></p>
-                <textarea id="answerInput" rows="4" placeholder="Write your answer here..."></textarea>
-                <button onclick="submitAnswer()">Submit Answer</button>
-                <button onclick="cancelAnswer()" style="margin-left: 10px; background-color: #ff4d4d;">Cancel</button>
-            </div>
         </div>
     </div>
 
@@ -258,6 +253,7 @@ button:hover {
         const db = getFirestore(app);
         const questionsCollection = collection(db, "questions");
         const loadingPopup = document.getElementById("loadingPopup");
+        let currentAnswerSection = null; // Track the currently open answer section
 
         async function addQuestion() {
             loadingPopup.style.display = "block";
@@ -293,12 +289,12 @@ button:hover {
                 const questionText = document.createElement('div');
                 questionText.className = 'question-text';
                 questionText.innerText = data.question;
-                questionText.onclick = () => openAnswerBox(docSnap.id, data.question);
+                questionText.onclick = () => openAnswerBox(docSnap.id, data.question, questionWrapper);
                 questionWrapper.appendChild(questionText);
 
                 const answerBtn = document.createElement('button');
                 answerBtn.innerText = "Write Answer";
-                answerBtn.onclick = () => openAnswerBox(docSnap.id, data.question);
+                answerBtn.onclick = () => openAnswerBox(docSnap.id, data.question, questionWrapper);
                 questionWrapper.appendChild(answerBtn);
 
                 if (data.answers && data.answers.length > 0) {
@@ -334,33 +330,47 @@ button:hover {
             });
         }
 
-        function openAnswerBox(id, questionText) {
-            const section = document.getElementById('answerSection');
-            const currentQuestionText = document.getElementById('currentQuestionText');
+        function openAnswerBox(id, questionText, questionWrapper) {
+            // Close any existing answer section
+            if (currentAnswerSection) {
+                currentAnswerSection.remove();
+                currentAnswerSection = null;
+            }
 
-            // Show the answer section and set the current question text
-            section.style.display = 'block';
-            currentQuestionText.innerText = `Answering: ${questionText}`;
-            section.dataset.currentDocId = id;
+            // Create new answer section
+            const answerSection = document.createElement('div');
+            answerSection.className = 'answer-box';
+            answerSection.id = `answer-section-${id}`;
+            answerSection.dataset.currentDocId = id;
 
-            // Clear the answer input
-            document.getElementById('answerInput').value = '';
+            // Answer section content
+            answerSection.innerHTML = `
+                <h3>Write Your Solution</h3>
+                <p>Answering: ${questionText}</p>
+                <textarea id="answer-input-${id}" rows="4" placeholder="Write your answer here..."></textarea>
+                <button onclick="submitAnswer('${id}')">Submit Answer</button>
+                <button onclick="cancelAnswer('${id}')" style="margin-left: 10px; background-color: #ff4d4d;">Cancel</button>
+            `;
+
+            // Append the answer section directly below the question
+            questionWrapper.appendChild(answerSection);
+            currentAnswerSection = answerSection;
         }
 
-        async function submitAnswer() {
-            const section = document.getElementById('answerSection');
-            const id = section.dataset.currentDocId;
-            const answer = document.getElementById('answerInput').value.trim();
+        async function submitAnswer(id) {
+            const answerSection = document.getElementById(`answer-section-${id}`);
+            const answerInput = document.getElementById(`answer-input-${id}`);
+            const answer = answerInput.value.trim();
 
             loadingPopup.style.display = "block";
-            let prompt = answer + "Check if the given sentence contains vulgar, offensive, or inappropriate language, returning true if it does and false otherwise, with no additional output.";
+            let prompt = answer + " Check if the given sentence contains vulgar, offensive, or inappropriate language, returning true if it does and false otherwise, with no additional output.";
             let mcp = await getNotes(prompt);
             console.log(mcp);
             loadingPopup.style.display = "none";
 
             if (String(mcp).trim().toLowerCase() === "true") {
                 alert("Don't use vulgar language");
-                document.getElementById('answerInput').value = '';
+                answerInput.value = '';
                 return;
             }
 
@@ -375,17 +385,17 @@ button:hover {
             });
 
             alert("Answer submitted successfully!");
-            section.style.display = 'none';
-            document.getElementById('answerInput').value = '';
-            document.getElementById('currentQuestionText').innerText = '';
+            answerSection.remove();
+            currentAnswerSection = null;
             loadQuestions();
         }
 
-        function cancelAnswer() {
-            const section = document.getElementById('answerSection');
-            section.style.display = 'none';
-            document.getElementById('answerInput').value = '';
-            document.getElementById('currentQuestionText').innerText = '';
+        function cancelAnswer(id) {
+            const answerSection = document.getElementById(`answer-section-${id}`);
+            if (answerSection) {
+                answerSection.remove();
+                currentAnswerSection = null;
+            }
         }
 
         logoutButton.addEventListener("click", function() {
