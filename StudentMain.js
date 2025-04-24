@@ -441,6 +441,7 @@ import { formatMarkdownToHTML } from "./ChatBotscript.js";
             nextBtn.style.display = "none";
             topicPlace.classList.remove("active");
             questionPlace.classList.add("active");
+            Readingcancle.style.display = "block";   
             pageInfo.style.display = "none";
             questionPlace.disabled = true;
             topicPlace.disabled = false;
@@ -484,6 +485,7 @@ import { formatMarkdownToHTML } from "./ChatBotscript.js";
             
                 // Hide Submit, Show Completed Reading
                 submitButton.style.display = "none";
+             
                 completedReading.style.display = "inline-block";
             });
             completedReading.addEventListener("click", async function () {
