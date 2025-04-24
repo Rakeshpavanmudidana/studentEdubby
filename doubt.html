@@ -279,7 +279,7 @@ button:hover {
 
           let prompt = question + " Check if the given sentence contains vulgar, offensive, or inappropriate language, returning true if it does and false otherwise, with no additional output.";
           loadingPopup.style.display = "none";
-
+          let mcp = await getNotes(prompt);
           if (String(mcp).trim().toLowerCase() === "true") {
           alert("Don't use vulgar, offensive, or inappropriate language");
           console.log(typeof mcp);
@@ -371,7 +371,7 @@ button:hover {
 
           let mcp = await getNotes(prompt);
           loadingPopup.style.display = "none";
-
+          
           if (String(mcp).trim().toLowerCase() === "true") {
           alert("Don't use vulgar language");
           console.log(typeof mcp);
