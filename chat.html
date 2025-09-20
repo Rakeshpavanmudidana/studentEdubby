@@ -220,120 +220,140 @@ h1 {
       <script type="module" src="bottom.js"> </script>
 
       <script type="module">
-        // Firebase imports for module usage
-        import { getNotes } from "./script.js";
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      deleteDoc,
-      doc,
-      onSnapshot,
-      query,
-      orderBy
-    } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-        
-     const logoutButton = document.getElementById("logoutButton");
-        let cookieuserName = "Studentname";
-    let cookieStudentbranch = "Studentbranch"
-    let cookicollegeName = "Studentcollegename";
-        // Generate or get existing unique user ID (anonymous)
-     let currentUser = localStorage.getItem("anonUserId");
-      if (!currentUser) {
-        currentUser = "user_" + Math.random().toString(36).substr(2, 9);
-        localStorage.setItem("anonUserId", currentUser);
-      }
-    
-    // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyD59v8ql2Y3Xrb7JXV4RqPAU0nRKHS55JA",
-      authDomain: "chat-app-c1090.firebaseapp.com",
-      projectId: "chat-app-c1090",
-      storageBucket: "chat-app-c1090.appspot.com",
-      messagingSenderId: "1039367000791",
-      appId: "1:1039367000791:web:2a37420e733deba92ad692"
-    };
-    const loadingPopup = document.getElementById("loadingPopup");
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    
-    // Send message
-    const sendBtn = document.getElementById("sendBtn");
-    sendBtn.addEventListener("click", async () => {
-      loadingPopup.style.display = "block";
-      const input = document.getElementById("messageInput");
-      const text = input.value.trim();
-    
-      if (text) {
-        let prompt = text + " Check if the given sentence contains vulgar, offensive, or inappropriate language, returning true if it does and false otherwise, with no additional output.";
-        let mcp = await getNotes(prompt);
-        loadingPopup.style.display = "none";
+  // Import Firebase
+  import { getNotes } from "./script.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    deleteDoc,
+    doc,
+    onSnapshot,
+    query,
+    orderBy
+  } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-        if (String(mcp).trim().toLowerCase() === "true") {
+  // Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyD59v8ql2Y3Xrb7JXV4RqPAU0nRKHS55JA",
+    authDomain: "chat-app-c1090.firebaseapp.com",
+    projectId: "chat-app-c1090",
+    storageBucket: "chat-app-c1090.appspot.com",
+    messagingSenderId: "1039367000791",
+    appId: "1:1039367000791:web:2a37420e733deba92ad692"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Elements
+  const sendBtn = document.getElementById("sendBtn");
+  const messageInput = document.getElementById("messageInput");
+  const chatBox = document.getElementById("chatBox");
+  const loadingPopup = document.getElementById("loadingPopup");
+  const logoutButton = document.getElementById("logoutButton");
+
+  // Generate or get existing unique user ID
+  let currentUser = localStorage.getItem("anonUserId");
+  if (!currentUser) {
+    currentUser = "user_" + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem("anonUserId", currentUser);
+  }
+
+  // Send message
+  sendBtn.addEventListener("click", async () => {
+    const text = messageInput.value.trim();
+
+    if (!text) return;
+
+    loadingPopup.style.display = "block";
+
+    // Check for vulgar or offensive language
+    let prompt =
+      text +
+      " Check if the given sentence contains vulgar, offensive, or inappropriate language, returning true if it does and false otherwise, with no additional output.";
+
+    try {
+      const mcp = await getNotes(prompt);
+
+      if (String(mcp).trim().toLowerCase() === "true") {
         alert("Don't use vulgar, offensive or inappropriate language");
-        console.log(typeof mcp);
-        input.value = '';
+        messageInput.value = "";
+        loadingPopup.style.display = "none";
         return;
-        }
-         await addDoc(collection(db, "messages"), {
-          text,
-          userId: currentUser,
-          timestamp: new Date()
-        });
-        input.value = "";
-        loadingPopup.style.display = "none";  
       }
-    });
-    
-    // Real-time message listener
-    const chatBox = document.getElementById("chatBox");
-    const q = query(collection(db, "messages"), orderBy("timestamp"));
-    
-    onSnapshot(q, (snapshot) => {
-      chatBox.innerHTML = "";
-    
-      onSnapshot(q, (snapshot) => {
-  chatBox.innerHTML = "";
 
-  snapshot.forEach((docSnap) => {
-    const msg = docSnap.data();
+      // Add message to Firestore
+      await addDoc(collection(db, "messages"), {
+        text,
+        userId: currentUser,
+        timestamp: new Date()
+      });
 
-    const messageDiv = document.createElement("div");
-    messageDiv.className = "message";
-    messageDiv.innerText = msg.text;
-
-    // Only allow delete if the message was sent by this user
-    if (msg.userId === currentUser) {
-      const delBtn = document.createElement("button");
-      delBtn.innerText = "Delete";
-      delBtn.className = "delete-btn";
-      delBtn.onclick = async () => {
-        await deleteDoc(doc(db, "messages", docSnap.id));
-      };
-      messageDiv.appendChild(delBtn); // Append only if user matches
+      messageInput.value = "";
+    } catch (error) {
+      console.error("Error sending message:", error);
+      alert("Something went wrong while sending your message.");
+    } finally {
+      loadingPopup.style.display = "none";
     }
-
-    chatBox.appendChild(messageDiv); // Append the message
   });
-});
 
+  // Real-time listener for messages
+  const q = query(collection(db, "messages"), orderBy("timestamp"));
+
+  onSnapshot(q, (snapshot) => {
+    chatBox.innerHTML = "";
+
+    snapshot.forEach((docSnap) => {
+      const msg = docSnap.data();
+
+      const messageDiv = document.createElement("div");
+      messageDiv.className = "message";
+      messageDiv.innerText = msg.text;
+
+      // Show delete button only for current user's messages
+      if (msg.userId === currentUser) {
+        const delBtn = document.createElement("button");
+        delBtn.innerText = "Delete";
+        delBtn.className = "delete-btn";
+        delBtn.onclick = async () => {
+          try {
+            await deleteDoc(doc(db, "messages", docSnap.id));
+          } catch (error) {
+            console.error("Error deleting message:", error);
+            alert("Failed to delete message.");
+          }
+        };
+        messageDiv.appendChild(delBtn);
+      }
+
+      chatBox.appendChild(messageDiv);
     });
-    logoutButton.addEventListener("click", function(){
-        
-        let result = confirm("Are you sure you want to logout?");
-        if (!result) {
-            return;
-        }
-        document.cookie = `${cookieuserName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-        document.cookie = `${cookieStudentbranch}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-        document.cookie = `${cookicollegeName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-        window.location.href = "index.html";
-    })
-   
+  });
 
-    
-      </script>
+  // Logout button
+  logoutButton.addEventListener("click", function () {
+    const confirmLogout = confirm("Are you sure you want to logout?");
+    if (!confirmLogout) return;
+
+    // Clear cookies
+    document.cookie =
+      "Studentname=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie =
+      "Studentbranch=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie =
+      "Studentcollegename=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+    // Clear localStorage
+    localStorage.removeItem("anonUserId");
+
+    // Redirect to login page
+    window.location.href = "index.html";
+  });
+</script>
+
 </body>
 </html>
